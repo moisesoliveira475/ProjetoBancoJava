@@ -45,7 +45,7 @@ public class BancoUam {
             this.setSaldo(this.getSaldo() + v);
             System.out.println("depósito realizado com sucesso na conta de " + this.getDono());
         } else {
-            System.out.println("impossível depositar numa conta desativada");
+            System.out.println("impossível depositar em uma conta desativada");
         }
     }
 
