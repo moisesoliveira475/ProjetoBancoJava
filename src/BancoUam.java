@@ -29,7 +29,7 @@ public class BancoUam extends Pessoa {
 
     public void fecharConta() {
         if (this.getSaldo() > 0) {
-            System.out.println("Conta não pode ser fechada\n pois tem saldo");
+            System.out.println("Conta não pode ser fechada\n pois ainda tem saldo");
         } else if (this.getSaldo() < 0) {
             System.out.println("Conta não pode ser fechada\n pois tem débitos");
         } else {
