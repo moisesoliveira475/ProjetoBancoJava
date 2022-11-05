@@ -1,9 +1,8 @@
-public class BancoUam {
+public class BancoUam extends Pessoa {
 
     // atributos
-    public int numConta;
-    protected String tipo;
-    private String dono;
+    private int numConta;
+    private String tipo;
     private float saldo;
     private boolean status;
     private float taxaEsp = 0.5f;
@@ -12,17 +11,17 @@ public class BancoUam {
     public void estadoAtual() {
         System.out.println("Conta: " + this.getNumConta());
         System.out.println("tipo: " + this.getTipo());
-        System.out.println("Dono: " + this.getDono());
+        System.out.println("Dono: " + super.getNome());
         System.out.println("saldo: " + this.getSaldo());
         System.out.println("Status: " + this.isStatus());
     }
 
-    public void abrirConta(String t) {
-        this.setTipo(t);
+    public void abrirConta(String tipo) {
+        this.setTipo(tipo);
         this.setStatus(true);
-        if ("CC".equals(t)) {
+        if ("CC".equals(tipo)) {
             this.setSaldo(50);
-        } else if ("CP".equals(t)) {
+        } else if ("CP".equals(tipo)) {
             this.setSaldo(150);
         }
         System.out.println("Conta aberta com sucesso!");
@@ -43,7 +42,7 @@ public class BancoUam {
     public void depositar(float v) {
         if (this.isStatus()) {
             this.setSaldo(this.getSaldo() + v);
-            System.out.println("depósito realizado com sucesso na conta de " + this.getDono());
+            System.out.println("depósito realizado com sucesso na conta de " + super.getNome());
         } else {
             System.out.println("impossível depositar em uma conta desativada");
         }
@@ -53,7 +52,7 @@ public class BancoUam {
         if (this.isStatus()) {
             if (this.getSaldo() >= v) {
                 this.setSaldo(this.getSaldo() - v);
-                System.out.println(this.getDono() + ", Saque efetuado com sucesso!");
+                System.out.println(super.getNome() + ", Saque efetuado com sucesso!");
             } else {
                 System.out.println("Saldo insuficiente");
             }
@@ -66,7 +65,7 @@ public class BancoUam {
         if (this.isStatus()) {
             if (this.getSaldo() >= v) {
                 this.setSaldo((this.getSaldo() - v) - taxaEsp);
-                System.out.println(this.getDono() + " ,Saque efetuado com sucesso!");
+                System.out.println(super.getNome() + " ,Saque efetuado com sucesso!");
             } else {
                 System.out.println("Saldo insuficiente");
             }
@@ -84,7 +83,7 @@ public class BancoUam {
         }
         if (this.isStatus()) {
             this.setSaldo(this.getSaldo() - v);
-            System.out.println(this.getDono() + " ,mensalidade paga com sucesso");
+            System.out.println(super.getNome() + " ,mensalidade paga com sucesso");
         } else {
             System.out.println("Necessário conta aberta");
         }
@@ -110,10 +109,6 @@ public class BancoUam {
         return this.numConta;
     }
 
-    public String getDono() {
-        return dono;
-    }
-
     public void setSaldo(float saldo) {
         this.saldo = saldo;
     }
@@ -124,10 +119,6 @@ public class BancoUam {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
-    }
-
-    public void setDono(String dono) {
-        this.dono = dono;
     }
 
     public String getTipo() {
