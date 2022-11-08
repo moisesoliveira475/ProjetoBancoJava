@@ -1,4 +1,7 @@
-public class Administrador extends BancoUam {
+
+package usuarios;
+
+public class Administrador extends Pessoa {
     int idad;
 
     public int getIdad() {

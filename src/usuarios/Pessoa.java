@@ -1,3 +1,5 @@
+package usuarios;
+
 public abstract class Pessoa {
     // atributos
 

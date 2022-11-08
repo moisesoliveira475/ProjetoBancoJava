@@ -1,3 +1,7 @@
+package banco;
+
+import usuarios.*;
+
 public class BancoUam extends Pessoa {
 
     // atributos
@@ -20,11 +24,20 @@ public class BancoUam extends Pessoa {
         this.setTipo(tipo);
         this.setStatus(true);
         if ("CC".equals(tipo)) {
-            this.setSaldo(50);
+            this.setSaldo(100);
+            this.setNumConta(1);
+            System.out.println("Conta aberta com sucesso " + super.getNome() +
+                    "! e o número da sua conta é " + this.getNumConta());
         } else if ("CP".equals(tipo)) {
-            this.setSaldo(150);
+            this.setSaldo(50);
+            this.setNumConta(1);
+            System.out.println("Conta aberta com sucesso " + super.getNome() + "!");
+
+        } else {
+            System.out.println("Não foi possível abrir a conta " + super.getNome() +
+                    "! Contate um administrador.");
         }
-        System.out.println("Conta aberta com sucesso!");
+
     }
 
     public void fecharConta() {

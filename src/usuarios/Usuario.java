@@ -1,3 +1,7 @@
+package usuarios;
+
+import banco.BancoUam;
+
 public class Usuario extends BancoUam {
     private int idu;
 
