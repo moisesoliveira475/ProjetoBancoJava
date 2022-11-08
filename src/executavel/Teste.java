@@ -1,23 +1,36 @@
 package executavel;
 
-public class Teste {
-    public static void main(String[] args) {
-        /*
-         * BancoUam c1 = new BancoUam();
-         * c1.abrirConta("CC");
-         * System.out.println(c1.getSaldo());
-         * c1.sacar(10);
-         * System.out.println(c1.getSaldo());
-         * ContaEsp c2 = new ContaEsp();
-         * c2.sacar(10);
-         * System.out.println(c2.getSaldo());
-         */
-        usuarios.Usuario u1 = new usuarios.Usuario();
-        u1.setNome("Moises");
-        u1.abrirConta("CC");
-        u1.depositar(200);
-        u1.sacar(100);
-        u1.estadoAtual();
-    }
+import java.sql.*;
+import java.util.Scanner;
 
+import conexao.*;
+
+public class Teste {
+
+    public static void main(String[] args) {
+        int action;
+        Scanner input = new Scanner(System.in);
+
+        try {
+            Conexao connection = new Conexao();
+            System.out.println("Conectado ao banco...");
+
+            System.out.print("####### BEM VINDO #######\n1(Adicionar usuário) 2(Remover alguém) 3(Sair)\n--> ");
+            action = input.nextInt();
+
+            switch (action) {
+                case 1:
+                    connection.AddUser();
+                    break;
+                case 3:
+                    break;
+                default:
+                    break;
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro -> " + e);
+        } catch (Exception e) {
+            System.err.println("Digite apenas números...");
+        }
+    }
 }

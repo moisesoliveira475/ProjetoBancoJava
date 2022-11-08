@@ -2,7 +2,6 @@ package usuarios;
 
 public abstract class Pessoa {
     // atributos
-
     private String nome;
     private String idade;
     private String RG;
