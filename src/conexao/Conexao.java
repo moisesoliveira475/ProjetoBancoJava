@@ -24,7 +24,7 @@ public class Conexao {
         try {
             Statement stnt = (Statement) Conexao().createStatement();
 
-            System.out.println("\nEnviando informações...\n");
+            // System.out.println("\nEnviando informações...\n");
             // String insertUser = "INSERT INTO funcionarios(name, rg, cpf, position) VALUES ('" + name + "','" + rg + "','" + cpf + "','" + position + "');";
             // stnt.execute(insertUser);
 
