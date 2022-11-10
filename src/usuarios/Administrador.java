@@ -2,14 +2,15 @@
 package usuarios;
 
 public class Administrador extends Pessoa {
-    int idad;
+    int idade;
 
-    public int getIdad() {
-        return idad;
+    @Override
+    public int getIdade() {
+        return idade;
     }
-
-    public void setIdad(int idad) {
-        this.idad = idad;
+    @Override
+    public void setIdade(int value) {
+        this.idade = value;
     }
 
     public Administrador() {

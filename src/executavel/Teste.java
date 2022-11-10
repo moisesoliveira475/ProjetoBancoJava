@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 import conexao.*;
 
-public class Teste {
+public class Teste  {
 
     public static void main(String[] args) {
         int action;

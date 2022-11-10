@@ -3,40 +3,36 @@ package usuarios;
 public abstract class Pessoa {
     // atributos
     private String nome;
-    private String idade;
-    private String RG;
-    private String CPF;
+    private int idade;
+    private String rg;
+    private String cpf;
+    
     // métodos acessores
-
     public String getNome() {
         return nome;
     }
-
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setNome(String value) {
+        this.nome = value;
     }
 
-    public String getIdade() {
+    public int getIdade() {
         return idade;
     }
-
-    public void setIdade(String idade) {
-        this.idade = idade;
+    public void setIdade(int value) {
+        this.idade = value;
     }
 
     public String getRG() {
-        return RG;
+        return rg;
     }
-
-    public void setRG(String rG) {
-        RG = rG;
+    public void setRG(String value) {
+        rg = value;
     }
 
     public String getCPF() {
-        return CPF;
+        return cpf;
     }
-
-    public void setCPF(String cPF) {
-        CPF = cPF;
+    public void setCPF(String value) {
+        cpf = value;
     }
 }
