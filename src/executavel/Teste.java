@@ -13,9 +13,9 @@ public class Teste  {
 
         try {
             Conexao connection = new Conexao();
-            System.out.println("Conectado ao banco...");
+            connection.Conexao();    
 
-            System.out.print("####### BEM VINDO #######\n1(Adicionar usuário) 2(Remover alguém) 3(Sair)\n--> ");
+            System.out.print("\n1(Adicionar usuário) 2(Remover alguém) 3(Sair)\n--> ");
             action = input.nextInt();
 
             switch (action) {
