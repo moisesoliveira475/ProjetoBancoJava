@@ -5,21 +5,15 @@ import java.util.Scanner;
 
 public class Conexao  {
     private static Connection connection;
+    
+    DadosUsuario dadosUsuario = new DadosUsuario();
 
     Scanner input = new Scanner(System.in);
 
     public Connection Conexao() throws SQLException {
-        String user = "", pass = "";
-        
-        if(connection == null) {
-            System.out.println("--- Bem vindo ao banco ---");
-            System.out.print("Usuario--> ");
-            user = input.nextLine();
-            System.out.print("Senha--> ");
-            pass = input.nextLine();
-        }
-        
-        String URL = "jdbc:mysql://"+user+"@localhost:3306/usuariosbancouam";
+        String user = "root", pass = "root";
+   
+        String URL = "jdbc:mysql://"+user+"@localhost:3306/bancouam";
         
         try {
             if (connection == null) {
@@ -31,35 +25,56 @@ public class Conexao  {
             throw new SQLException(e.getMessage());
         }
     }
-
-    public String AddUser() throws SQLException {
+    
+    public Boolean Entrar(String email, String pass) {
         try {
-            Statement stnt = (Statement) Conexao().createStatement();
-            String name, rg, cpf, email;
-            int age;
+            String verifyPass = "select email, senha from usuarios where email=? and senha=?;";
+            PreparedStatement psVerifyPass = Conexao().prepareStatement(verifyPass);
+            psVerifyPass.setString(1, email);
+            psVerifyPass.setString(2, pass);
             
-            System.out.println("Preencha os campos a seguir...");
-            System.out.print("Nome--> ");
-            name = input.next();
-            System.out.print("Idade--> ");
-            age = input.nextInt();
-            System.out.print("RG sem traços/pontos--> ");
-            rg = input.next();
-            System.out.print("CPF sem traços/pontos--> ");
-            cpf = input.next();
-            System.out.print("Email--> ");
-            email = input.next();
+            ResultSet rs;
+            rs = psVerifyPass.executeQuery();
             
-            System.out.println("\nEnviando informações...");
-            String insertUser = "INSERT INTO users(name, age, rg, cpf, email) VALUES "
-                    + "('"+name+"',"+age+",'"+rg+"','"+cpf+"','"+email+"');";
-            stnt.execute(insertUser);
+            boolean isConnected = false;
+            
+            if (rs.next()) {
+                dadosUsuario.setEmail(rs.getString("email"));
+                dadosUsuario.setSenha(rs.getString("senha"));
 
-            System.out.println("Usuário adicionado com sucesso\n");
-            return "Usuário adicionado com sucesso";
+                String getUserData = "select id_usuario,nome,cpf,data_nascimento,renda_mensal,id_conta from usuarios where email=? and senha=?";
+                PreparedStatement psGetUserData = Conexao().prepareStatement(getUserData);
+                psGetUserData.setString(1, email);
+                psGetUserData.setString(2, pass);
+                
+                rs = psGetUserData.executeQuery();
+                if(rs.next()) {
+                    dadosUsuario.setId(rs.getInt(1));
+                    dadosUsuario.setNome(rs.getString(2));
+                    dadosUsuario.setCpf(rs.getString(3));
+                    dadosUsuario.setData_nascimento(rs.getString(4));
+                    dadosUsuario.setRenda_mensal(rs.getString(5));
+                    dadosUsuario.setId_conta(rs.getString(6));
+                    
+                    isConnected = true;
+                } 
+            }
+            return isConnected;
         } catch (SQLException e) {
-            System.out.println("Algo deu errrado ao adicionar usuário!\n" + e);
-            return "Algo deu errrado ao adicionar usuário!\n" + e;
+            System.out.println("Erro ao conectar -> " +e.getSQLState());
+            return false;
+        }
+    }
+    
+    public Boolean Cadastrar() throws SQLException {
+        try {
+            
+            
+            
+            return false;
+        } catch (Exception e) {
+            System.out.println("Erro ao conectar -> "+e);
+            return false;
         }
     }
 }
