@@ -1,15 +1,26 @@
 package interfaces;
 
+import conexao.Conexao;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.Toolkit;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Cadastrar {
     Entrar entrar = new Entrar();
     
+    Conexao conexao = new Conexao();
+   
     public void show() {
         JFrame frame = new JFrame("Cadastrar");
-        frame.setSize(400,480);
+        frame.setSize(786,480);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/assets/coffee.png")));
@@ -20,18 +31,18 @@ public class Cadastrar {
         
         JLabel lblTitulo = new JLabel("Informações pessoais");
         lblTitulo.setText("ABRIR UMA NOVA CONTA");
-        lblTitulo.setBounds(70, 15, 350, 21);
+        lblTitulo.setBounds(288, 15, 350, 21);
         lblTitulo.setForeground(new Color(225, 225, 225));
         lblTitulo.setFont(new Font("Arial", 500, 20));
 
         JSeparator lblDivisao = new JSeparator();
-        lblDivisao.setBounds(0, 51, 400, 1);
+        lblDivisao.setBounds(0, 51, 786, 1);
         lblDivisao.setForeground(new Color(30, 30, 30));
         
-        JLabel lblSubtitulo = new JLabel("Informações pessoais");
-        lblSubtitulo.setBounds(14, 66, 176, 21);
-        lblSubtitulo.setForeground(new Color(225, 225, 225));
-        lblSubtitulo.setFont(new Font("Arial", 500, 18));
+        JLabel lblSubtituloPessoal = new JLabel("Informações pessoais");
+        lblSubtituloPessoal.setBounds(14, 66, 176, 21);
+        lblSubtituloPessoal.setForeground(new Color(225, 225, 225));
+        lblSubtituloPessoal.setFont(new Font("Arial", 500, 18));
         
         JLabel lblNome = new JLabel("Nome");
         lblNome.setBounds(25, 95, 40, 17);
@@ -87,9 +98,62 @@ public class Cadastrar {
         txtRendaMensal.setBackground(new Color(82,82,82));
         txtRendaMensal.setBorder(null);
         
+        JLabel lblSubtituloBancario = new JLabel("Informações Bancárias");
+        lblSubtituloBancario.setBounds(380, 66, 183, 21);
+        lblSubtituloBancario.setForeground(new Color(225, 225, 225));
+        lblSubtituloBancario.setFont(new Font("Arial", 500, 18));
+        
+        JLabel lblNumeroConta = new JLabel("Nº de conta");
+        lblNumeroConta.setBounds(391, 95, 79, 17);
+        lblNumeroConta.setForeground(new Color(225, 225, 225));
+        
+        JTextField txtNumeroConta = new JTextField();
+        txtNumeroConta.setBounds(380, 113, 360, 30);
+        txtNumeroConta.setBackground(new Color(82,82,82));
+        txtNumeroConta.setBorder(null);
+        txtNumeroConta.setEditable(false);
+        txtNumeroConta.setText("Gerado automaticamente");
+        
+        JLabel lblSenhaConta = new JLabel("Senha da conta");
+        lblSenhaConta.setBounds(391, 153, 104, 17);
+        lblSenhaConta.setForeground(new Color(225, 225, 225));
+        
+        JTextField txtSenhaConta = new JTextField();
+        txtSenhaConta.setBounds(380, 171, 360, 30);
+        txtSenhaConta.setBackground(new Color(82,82,82));
+        txtSenhaConta.setBorder(null);
+
+        JLabel lblTipoConta = new JLabel("Tipo de conta");
+        lblTipoConta.setBounds(391, 211, 92, 17);
+        lblTipoConta.setForeground(new Color(225, 225, 225));
+        
+        String[] tiposDeConta = { "Poupança", "Corrente" };
+        JComboBox boxTipoConta = new JComboBox(tiposDeConta);
+        boxTipoConta.setBounds(380, 229, 360, 30);
+        boxTipoConta.setBackground(new Color(82,82,82));
+        boxTipoConta.setBorder(null);
+        boxTipoConta.setSelectedIndex(0);
+        boxTipoConta.addActionListener(e -> {
+            System.out.println(e.toString());
+        });
+        
+        JLabel lblStatusConta = new JLabel("Status da conta");
+        lblStatusConta.setBounds(391, 269, 108, 17);
+        lblStatusConta.setForeground(new Color(225, 225, 225));
+        
+        String[] statusDeConta = { "ATIVADA", "DESATIVADA" };
+        JComboBox boxStatusConta = new JComboBox(statusDeConta);
+        boxStatusConta.setBounds(380, 286, 160, 30);
+        boxStatusConta.setBackground(new Color(82,82,82));
+        boxStatusConta.setBorder(null);
+        boxStatusConta.setSelectedIndex(0);
+        boxStatusConta.addActionListener(e -> {
+            System.out.println(e.paramString());
+        });
+        
         JButton btnCancelar = new JButton();
         btnCancelar.setText("CANCELAR");
-        btnCancelar.setBounds(62, 392, 107, 33);
+        btnCancelar.setBounds(448, 364, 107, 33);
         btnCancelar.setBorder(null);
         btnCancelar.setBackground(new Color(82,82,82));
         btnCancelar.setForeground(new Color(225,225,225));
@@ -99,16 +163,34 @@ public class Cadastrar {
         });
         
         JButton btnContinuar = new JButton();
-        btnContinuar.setText("CONTINUAR");
-        btnContinuar.setBounds(194, 392, 144, 33);
+        btnContinuar.setText("CADASTRAR");
+        btnContinuar.setBounds(580, 364, 144, 33);
         btnContinuar.setBorder(null);
         btnContinuar.setBackground(new Color(6, 104, 6));
         btnContinuar.setForeground(new Color(225,225,225));
-        btnContinuar.addActionListener(e -> { });
+        btnContinuar.addActionListener(e -> {
+            try {
+                float rM = Float.parseFloat(txtRendaMensal.getText());
+                java.util.Date lDate = new java.util.Date();
+                conexao.Cadastrar(txtNome.getText(), 
+                        txtCpf.getText(), 
+                        txtEmail.getText(), 
+                        txtSenha.getText(), 
+                        lDate,
+                        rM,
+                        txtSenhaConta.getText(), 
+                        boxTipoConta.getSelectedItem().toString(), 
+                        boxStatusConta.getSelectedItem().toString()); 
+            } catch (NumberFormatException  error) {
+                System.out.println("Erro no botão -> "+error);
+            } catch (SQLException ex) {
+                Logger.getLogger(Cadastrar.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
         
         panel.add(lblTitulo);
         panel.add(lblDivisao);
-        panel.add(lblSubtitulo);
+        panel.add(lblSubtituloPessoal);
         panel.add(lblNome);
         panel.add(txtNome);
         panel.add(lblCpf);
@@ -121,6 +203,15 @@ public class Cadastrar {
         panel.add(txtDataNascimento);
         panel.add(lblRendaMensal);
         panel.add(txtRendaMensal);
+        panel.add(lblSubtituloBancario);
+        panel.add(lblNumeroConta);
+        panel.add(txtNumeroConta);
+        panel.add(lblSenhaConta);
+        panel.add(txtSenhaConta);
+        panel.add(lblTipoConta);
+        panel.add(boxTipoConta);
+        panel.add(lblStatusConta);
+        panel.add(boxStatusConta);
         panel.add(btnCancelar);
         panel.add(btnContinuar);
         

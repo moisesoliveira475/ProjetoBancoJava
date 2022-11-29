@@ -7,9 +7,46 @@ public class DadosUsuario {
     private String senha;
     private String cpf;
     private String data_nascimento;
-    private String renda_mensal;
-    private String id_conta;
+    private float renda_mensal;
+    private int id_conta;
 
+    private String numeroConta;
+    private String tipoConta;
+    private float saldoConta;
+    private boolean statusConta;
+    
+    public String getNumeroConta() {
+        return numeroConta;
+    }
+
+    public void setNumeroConta(String numeroConta) {
+        this.numeroConta = numeroConta;
+    }
+
+    public String getTipoConta() {
+        return tipoConta;
+    }
+
+    public void setTipoConta(String tipoConta) {
+        this.tipoConta = tipoConta;
+    }
+
+    public float getSaldoConta() {
+        return saldoConta;
+    }
+
+    public void setSaldoConta(float saldoConta) {
+        this.saldoConta = saldoConta;
+    }
+
+    public boolean isStatusConta() {
+        return statusConta;
+    }
+
+    public void setStatusConta(boolean statusConta) {
+        this.statusConta = statusConta;
+    }
+    
     public int getId() {
         return id;
     }
@@ -58,19 +95,19 @@ public class DadosUsuario {
         this.data_nascimento = data_nascimento;
     }
 
-    public String getRenda_mensal() {
+    public float getRenda_mensal() {
         return renda_mensal;
     }
 
-    public void setRenda_mensal(String renda_mensal) {
+    public void setRenda_mensal(float renda_mensal) {
         this.renda_mensal = renda_mensal;
     }
 
-    public String getId_conta() {
+    public int getId_conta() {
         return id_conta;
     }
 
-    public void setId_conta(String id_conta) {
+    public void setId_conta(int id_conta) {
         this.id_conta = id_conta;
     }
 

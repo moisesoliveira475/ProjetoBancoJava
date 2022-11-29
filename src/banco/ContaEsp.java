@@ -1,7 +1,7 @@
 package banco;
 
 public class ContaEsp extends BancoUam {
-    @Override
+    /*@Override
     public void sacar(float valor) {
         float testar = (float) (valor * 1.005);
         if (testar <= super.getSaldo()) {
@@ -10,5 +10,5 @@ public class ContaEsp extends BancoUam {
         } else {
             System.out.println("Saque não realizado, por falta de saldo");
         }
-    }
+    }*/
 }
