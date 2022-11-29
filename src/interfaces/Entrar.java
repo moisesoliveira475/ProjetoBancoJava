@@ -4,13 +4,14 @@ import java.awt.Color;
 import java.awt.Toolkit;
 import javax.swing.*;
 
-import conexao.*;
+import conexao.Conexao;
+import conexao.DadosUsuario;
 
 public class Entrar {
     
     Conexao conexao = new Conexao();
     
-    public void show() {
+    public void show(DadosUsuario dadosUsuario) {
         JFrame frame = new JFrame("Entrar");
         frame.setSize(400,387);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -54,13 +55,11 @@ public class Entrar {
         btnEntrar.setBackground(btnBackground);
         btnEntrar.setForeground(textWhite);
         btnEntrar.addActionListener(e -> {
-            boolean result = conexao.Entrar(txtUsuario.getText(), new String(txtSenha.getPassword()));
+            boolean result = conexao.Entrar(dadosUsuario, txtUsuario.getText(), new String(txtSenha.getPassword()));
             if(result) {
                 Sistema sistema = new Sistema();
                 frame.setVisible(false);
-                sistema.show();
-            } else {
-                JOptionPane.showMessageDialog(null, "O dados digitados estão incorretos ou o usuário não existe.");
+                sistema.show(dadosUsuario);
             }
         });
         
@@ -73,7 +72,7 @@ public class Entrar {
         btnCadastrar.addActionListener(e -> {
             Cadastrar cadastrar = new Cadastrar();
             frame.setVisible(false);
-            cadastrar.show();
+            cadastrar.show(dadosUsuario);
         });
         
         panel.add(imageIcon);

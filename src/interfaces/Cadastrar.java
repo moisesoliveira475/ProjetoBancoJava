@@ -1,30 +1,29 @@
 package interfaces;
 
 import conexao.Conexao;
+import conexao.DadosUsuario;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.Toolkit;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.toedter.calendar.*;
+
 public class Cadastrar {
     Entrar entrar = new Entrar();
+    Sistema sistema = new Sistema();
     
     Conexao conexao = new Conexao();
    
-    public void show() {
+    public void show(DadosUsuario dadosUsuario) {
         JFrame frame = new JFrame("Cadastrar");
         frame.setSize(786,480);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/assets/coffee.png")));
-
+        
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setBackground(Color.darkGray);
@@ -83,7 +82,13 @@ public class Cadastrar {
         JLabel lblDataNascimento = new JLabel("Data de nacimento");
         lblDataNascimento.setBounds(53, 327, 133, 17);
         lblDataNascimento.setForeground(new Color(225, 225, 225));
+        lblDataNascimento.setBorder(null);
         
+        JDateChooser calDataNascimento = new JDateChooser();
+        calDataNascimento.setBounds(44, 345, 151, 27);
+        calDataNascimento.setBackground(new Color(82,82,82));
+        calDataNascimento.setBorder(null);
+         
         JTextField txtDataNascimento = new JTextField();
         txtDataNascimento.setBounds(44, 345, 151, 27);
         txtDataNascimento.setBackground(new Color(82,82,82));
@@ -133,9 +138,6 @@ public class Cadastrar {
         boxTipoConta.setBackground(new Color(82,82,82));
         boxTipoConta.setBorder(null);
         boxTipoConta.setSelectedIndex(0);
-        boxTipoConta.addActionListener(e -> {
-            System.out.println(e.toString());
-        });
         
         JLabel lblStatusConta = new JLabel("Status da conta");
         lblStatusConta.setBounds(391, 269, 108, 17);
@@ -147,9 +149,6 @@ public class Cadastrar {
         boxStatusConta.setBackground(new Color(82,82,82));
         boxStatusConta.setBorder(null);
         boxStatusConta.setSelectedIndex(0);
-        boxStatusConta.addActionListener(e -> {
-            System.out.println(e.paramString());
-        });
         
         JButton btnCancelar = new JButton();
         btnCancelar.setText("CANCELAR");
@@ -159,7 +158,7 @@ public class Cadastrar {
         btnCancelar.setForeground(new Color(225,225,225));
         btnCancelar.addActionListener(e -> {
             frame.setVisible(false);
-            entrar.show();
+            entrar.show(dadosUsuario);
         });
         
         JButton btnContinuar = new JButton();
@@ -171,16 +170,21 @@ public class Cadastrar {
         btnContinuar.addActionListener(e -> {
             try {
                 float rM = Float.parseFloat(txtRendaMensal.getText());
-                java.util.Date lDate = new java.util.Date();
-                conexao.Cadastrar(txtNome.getText(), 
+                
+                boolean result = conexao.Cadastrar(dadosUsuario,
+                        txtNome.getText(), 
                         txtCpf.getText(), 
                         txtEmail.getText(), 
                         txtSenha.getText(), 
-                        lDate,
+                        calDataNascimento.getDate(),
                         rM,
                         txtSenhaConta.getText(), 
                         boxTipoConta.getSelectedItem().toString(), 
                         boxStatusConta.getSelectedItem().toString()); 
+                if(result) {
+                    frame.setVisible(false);
+                    sistema.show(dadosUsuario);
+                }
             } catch (NumberFormatException  error) {
                 System.out.println("Erro no botão -> "+error);
             } catch (SQLException ex) {
@@ -200,7 +204,7 @@ public class Cadastrar {
         panel.add(lblSenha);
         panel.add(txtSenha);
         panel.add(lblDataNascimento);
-        panel.add(txtDataNascimento);
+        panel.add(calDataNascimento);
         panel.add(lblRendaMensal);
         panel.add(txtRendaMensal);
         panel.add(lblSubtituloBancario);

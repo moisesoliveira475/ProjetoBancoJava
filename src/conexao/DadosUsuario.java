@@ -1,19 +1,22 @@
 package conexao;
 
+import java.util.Date;
+
 public class DadosUsuario {
     private int id;
     private String nome;
     private String email;
     private String senha;
     private String cpf;
-    private String data_nascimento;
+    private Date data_nascimento;
     private float renda_mensal;
     private int id_conta;
 
     private String numeroConta;
+    private String senhaConta;
     private String tipoConta;
     private float saldoConta;
-    private boolean statusConta;
+    private String statusConta;
     
     public String getNumeroConta() {
         return numeroConta;
@@ -21,6 +24,14 @@ public class DadosUsuario {
 
     public void setNumeroConta(String numeroConta) {
         this.numeroConta = numeroConta;
+    }
+    
+    public String getSenhaConta() {
+        return senhaConta;
+    }
+
+    public void setSenhaConta(String senhaConta) {
+        this.senhaConta = senhaConta;
     }
 
     public String getTipoConta() {
@@ -39,11 +50,11 @@ public class DadosUsuario {
         this.saldoConta = saldoConta;
     }
 
-    public boolean isStatusConta() {
+    public String isStatusConta() {
         return statusConta;
     }
 
-    public void setStatusConta(boolean statusConta) {
+    public void setStatusConta(String statusConta) {
         this.statusConta = statusConta;
     }
     
@@ -87,11 +98,11 @@ public class DadosUsuario {
         this.cpf = cpf;
     }
 
-    public String getData_nascimento() {
+    public Date getData_nascimento() {
         return data_nascimento;
     }
 
-    public void setData_nascimento(String data_nascimento) {
+    public void setData_nascimento(Date data_nascimento) {
         this.data_nascimento = data_nascimento;
     }
 

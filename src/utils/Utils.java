@@ -1,11 +1,10 @@
-package banco;
+package utils;
 
 import java.util.Random;
 
-public class BancoUam {
-
+public class Utils {
     // gerar um número de conta aleatorio
-   String gerarNumeroConta() {
+   public String gerarNumeroConta() {
         Random gerador = new Random();
         
         String resultado = "";
