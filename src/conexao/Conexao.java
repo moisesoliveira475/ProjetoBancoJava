@@ -43,14 +43,14 @@ public class Conexao {
                 dadosUsuario.setEmail(rs.getString("email"));
                 dadosUsuario.setSenha(rs.getString("senha"));
         
-                String getUserData = "select id_usuario,nome,cpf,data_nascimento,renda_mensal,id_conta from usuarios where email=? and senha=?";
-                PreparedStatement psGetUserData = Conexao().prepareStatement(getUserData);
-                psGetUserData.setString(1, email);
-                psGetUserData.setString(2, pass);
+                String buscaUsuario = "select id_usuario,nome,cpf,data_nascimento,renda_mensal,id_conta from usuarios where email=? and senha=?";
+                PreparedStatement psBuscaUsuario = Conexao().prepareStatement(buscaUsuario);
+                psBuscaUsuario.setString(1, email);
+                psBuscaUsuario.setString(2, pass);
 
-                rs = psGetUserData.executeQuery();
+                rs = psBuscaUsuario.executeQuery();
                 if (rs.next()) {
-                    java.util.Date dataNascimentoConvertido = new java.sql.Date(rs.getDate(4).getTime());
+                   java.util.Date dataNascimentoConvertido = new java.sql.Date(rs.getDate(4).getTime());
                     
                     dadosUsuario.setId(rs.getInt(1));
                     dadosUsuario.setNome(rs.getString(2));
@@ -59,23 +59,23 @@ public class Conexao {
                     dadosUsuario.setRenda_mensal(rs.getFloat(5));
                     dadosUsuario.setId_conta(rs.getInt(6));
                     
-                    String getUserAccount = "select * from contas where contas.id_conta=?;";
-                    PreparedStatement psGetUserAccount = Conexao().prepareCall(getUserAccount);
-                    psGetUserAccount.setInt(1, rs.getInt(6));
+                    String buscaDadosBanco = "select numero, senha_conta, tipo, status, saldo from contas where id_conta=?;";
+                    PreparedStatement psBuscaDadosBanco = Conexao().prepareCall(buscaDadosBanco);
+                    psBuscaDadosBanco.setInt(1, rs.getInt(6));
                     
-                    rs = psGetUserAccount.executeQuery();
+                    rs = psBuscaDadosBanco.executeQuery();
                     if(rs.next()) {
-                        dadosUsuario.setId_conta(rs.getInt(1));
-                        dadosUsuario.setNumeroConta(rs.getString(2));
-                        dadosUsuario.setSenhaConta(rs.getString(3));
-                        dadosUsuario.setTipoConta(rs.getString(4));
-                        dadosUsuario.setStatusConta(rs.getString(5));
-                        dadosUsuario.setSaldoConta(rs.getFloat(6));
+                        dadosUsuario.setNumeroConta(rs.getString(1));
+                        dadosUsuario.setSenhaConta(rs.getString(2));
+                        dadosUsuario.setTipoConta(rs.getString(3));
+                        dadosUsuario.setStatusConta(rs.getString(4));
+                        dadosUsuario.setSaldoConta(rs.getFloat(5));
                         
-                        System.out.println("Bem vindo  "+dadosUsuario.getNome());
                         isConnected = true;
                     }
                 }
+            } else {
+                JOptionPane.showMessageDialog(null, "Verifique suas credenciais!");
             }
             return isConnected;
         } catch (SQLException e) {
@@ -114,7 +114,6 @@ public class Conexao {
                 psAcao = Conexao().prepareStatement(getAccountId);
                 psAcao.setInt(1, Integer.parseInt(numeroConta));
                 
-                
                 ResultSet rs;
                 rs = psAcao.executeQuery();
 
@@ -144,7 +143,7 @@ public class Conexao {
                         dadosUsuario.setNumeroConta(numeroConta);
                         dadosUsuario.setSenhaConta(senhaConta);
                         dadosUsuario.setTipoConta(tipoConta);
-                        dadosUsuario.setSaldoConta(rendaMensal);
+                        dadosUsuario.setSaldoConta(0);
                         dadosUsuario.setStatusConta(statusConta);
                         
                         System.out.println("Usuario criado e conta adicionada ^^");

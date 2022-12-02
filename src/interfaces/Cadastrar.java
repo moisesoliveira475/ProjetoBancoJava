@@ -28,8 +28,7 @@ public class Cadastrar {
         panel.setLayout(null);
         panel.setBackground(Color.darkGray);
         
-        JLabel lblTitulo = new JLabel("Informações pessoais");
-        lblTitulo.setText("ABRIR UMA NOVA CONTA");
+        JLabel lblTitulo = new JLabel("ABRIR UMA NOVA CONTA");
         lblTitulo.setBounds(288, 15, 350, 21);
         lblTitulo.setForeground(new Color(225, 225, 225));
         lblTitulo.setFont(new Font("Arial", 500, 20));
@@ -169,6 +168,12 @@ public class Cadastrar {
         btnContinuar.setForeground(new Color(225,225,225));
         btnContinuar.addActionListener(e -> {
             try {
+                if(txtNome.getText().isEmpty()||txtCpf.getText().isEmpty()||txtEmail.getText().isEmpty()||
+                        txtSenha.getText().isEmpty()||txtSenhaConta.getText().isEmpty()||calDataNascimento.getDate() == null) {
+                    JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos");
+                    return;
+                }
+                
                 float rM = Float.parseFloat(txtRendaMensal.getText());
                 
                 boolean result = conexao.Cadastrar(dadosUsuario,
@@ -186,8 +191,10 @@ public class Cadastrar {
                     sistema.show(dadosUsuario);
                 }
             } catch (NumberFormatException  error) {
+                JOptionPane.showMessageDialog(null, "Algo deu errado, erro -> "+error.getMessage());
                 System.out.println("Erro no botão -> "+error);
             } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, "Algo deu errado, erro -> "+ex.getMessage());
                 Logger.getLogger(Cadastrar.class.getName()).log(Level.SEVERE, null, ex);
             }
         });

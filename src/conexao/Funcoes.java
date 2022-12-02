@@ -1,0 +1,270 @@
+package conexao;
+
+import java.sql.*;
+import javax.swing.JOptionPane;
+
+import utils.*;
+
+public class Funcoes {
+        Conexao connection = new Conexao();
+        PreparedStatement psAcao;
+    
+    // função para realizar um depósito;
+    public boolean FazerDeposito(int idConta, int idUsuario, float valorADepositar, float valorBruto) {
+        boolean isSuccess = false;
+
+        try {
+            String inserirSaldo = "update contas set saldo = ? WHERE id_conta=?;";
+
+            psAcao = connection.Conexao().prepareStatement(inserirSaldo);
+            psAcao.setFloat(1, valorADepositar);
+            psAcao.setInt(2, idConta);
+
+            int rsUpdate = psAcao.executeUpdate();
+            if (rsUpdate == 1) {
+                String insertUsuarioMovimentacao = "INSERT INTO movimentacoes(id_movimentacao, titulo, valor, data_criacao) VALUES (null, ?, ?, ?);";
+                psAcao = connection.Conexao().prepareStatement(insertUsuarioMovimentacao, Statement.RETURN_GENERATED_KEYS);
+                psAcao.setString(1, "Depósito");
+                psAcao.setFloat(2, valorBruto);
+                psAcao.setDate(3, new java.sql.Date(new java.util.Date().getTime()));
+
+                psAcao.executeUpdate();
+
+                ResultSet rsInsert = psAcao.getGeneratedKeys();
+                if (rsInsert.next()) {
+                    String inserirUsuarioMovimentacao = "INSERT INTO usuarios_fazem_movimentacoes (id_usuario, id_movimentacao) VALUES (?, ?);";
+                    psAcao = connection.Conexao().prepareStatement(inserirUsuarioMovimentacao);
+                    psAcao.setInt(1, idUsuario);
+                    psAcao.setInt(2, rsInsert.getInt(1));
+
+                    int result = psAcao.executeUpdate();
+                    if (result == 1) {
+                        isSuccess = true;
+                        JOptionPane.showMessageDialog(null, "Deposito realizado com sucesso!");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Não foi possivel adicionar a movimentação :(");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Não foi possível adicionar o saldo :(");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro > " + e.getMessage());
+        }
+        return isSuccess;
+    }
+
+    // função para fazer saque;
+    public boolean FazerSaque(int idConta, int idUsuario, float saldoNovo) {
+        boolean isSuccess = false;
+
+        try {
+            String alterarSaldo = "UPDATE contas SET saldo = ? WHERE id_conta=?;";
+
+            psAcao = connection.Conexao().prepareStatement(alterarSaldo);
+            psAcao.setFloat(1, saldoNovo);
+            psAcao.setInt(2, idConta);
+
+            int rsUpdate = psAcao.executeUpdate();
+            if (rsUpdate == 1) {
+                String insertUsuarioMovimentacao = "INSERT INTO movimentacoes(id_movimentacao, titulo, valor, data_criacao) VALUES (null, ?, ?, ?);";
+                psAcao = connection.Conexao().prepareStatement(insertUsuarioMovimentacao, Statement.RETURN_GENERATED_KEYS);
+                psAcao.setString(1, "Saque");
+                psAcao.setFloat(2, saldoNovo);
+                psAcao.setDate(3, new java.sql.Date(new java.util.Date().getTime()));
+
+                psAcao.executeUpdate();
+
+                ResultSet rsInsert = psAcao.getGeneratedKeys();
+                if (rsInsert.next()) {
+                    String inserirUsuarioMovimentacao = "INSERT INTO usuarios_fazem_movimentacoes (id_usuario, id_movimentacao) VALUES (?, ?);";
+                    psAcao = connection.Conexao().prepareStatement(inserirUsuarioMovimentacao);
+                    psAcao.setInt(1, idUsuario);
+                    psAcao.setInt(2, rsInsert.getInt(1));
+
+                    int result = psAcao.executeUpdate();
+                    if (result == 1) {
+                        isSuccess = true;
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Não foi possivel adicionar a movimentação :(");
+                    return isSuccess;
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Não foi possível realizar o saque :(");
+                return isSuccess;
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro > " + e.getMessage());
+        }
+        return isSuccess;
+    }
+
+    // função que registra uma compra nas movimentações;
+    public boolean RegistrarCompra(int idUsuario, java.util.Date dataGasto, String tituloCompra, float valorCompra) {
+        boolean isSuccess = false;
+
+        try {
+            String insertMovimentacao = "INSERT INTO movimentacoes(id_movimentacao, titulo, valor, data_criacao) VALUES (null, ?, ?, ?);";
+            psAcao = connection.Conexao().prepareStatement(insertMovimentacao, Statement.RETURN_GENERATED_KEYS);
+            psAcao.setString(1, tituloCompra);
+            psAcao.setFloat(2, valorCompra);
+            psAcao.setDate(3, new java.sql.Date(new java.util.Date().getTime()));
+
+            psAcao.executeUpdate();
+
+            ResultSet rsInsert = psAcao.getGeneratedKeys();
+            if (rsInsert.next()) {
+                String inserirUsuarioMovimentacao = "INSERT INTO usuarios_fazem_movimentacoes (id_usuario, id_movimentacao) VALUES (?, ?);";
+                psAcao = connection.Conexao().prepareStatement(inserirUsuarioMovimentacao);
+                psAcao.setInt(1, idUsuario);
+                psAcao.setInt(2, rsInsert.getInt(1));
+
+                int result = psAcao.executeUpdate();
+                if (result == 1) {
+                    isSuccess = true;
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Não foi possivel registrar a compra");
+                return isSuccess;
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro > " + e.getMessage());
+        }
+        return isSuccess;
+    }
+
+    // função que adicionar um novo gasto essencial e insere nos registros de gastos;
+    public boolean AdicionarGastoEssencial(int idUsuario, java.util.Date dataGasto, String tituloGasto, float valorGasto) {
+        boolean isSuccess = false;
+
+        try {
+            String inserirGasto = "INSERT INTO gastos(id_gasto, titulo, valor) VALUES (null, ?, ?);";
+            psAcao = connection.Conexao().prepareStatement(inserirGasto, Statement.RETURN_GENERATED_KEYS);
+            psAcao.setString(1, tituloGasto);
+            psAcao.setFloat(2, valorGasto);
+
+            psAcao.executeUpdate();
+
+            ResultSet rsInsert = psAcao.getGeneratedKeys();
+            if (rsInsert.next()) {
+                String inserirUsuarioGasto = "INSERT INTO usuarios_registram_gastos(data, id_usuario, id_gasto) VALUES (?, ?, ?);";
+                psAcao = connection.Conexao().prepareStatement(inserirUsuarioGasto);
+                psAcao.setDate(1, new java.sql.Date(dataGasto.getTime()));
+                psAcao.setInt(2, idUsuario);
+                psAcao.setInt(3, rsInsert.getInt(1));
+
+                int result = psAcao.executeUpdate();
+                if (result == 1) {
+                    isSuccess = true;
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Não foi possivel adicionar o gasto");
+                return isSuccess;
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro > " + e.getMessage());
+        }
+        return isSuccess;
+    }
+
+    // função para atualizar renda mensal do usuario;
+    public boolean MudarRendaMensal(int idUsuario, float novaRenda) {
+        boolean isSuccess = false;
+
+        try {
+            String inserirRendaMensal = "UPDATE usuarios SET renda_mensal=? WHERE id_usuario=?;";
+            psAcao = connection.Conexao().prepareStatement(inserirRendaMensal);
+            psAcao.setFloat(1, novaRenda);
+            psAcao.setInt(2, idUsuario);
+
+            int rsInsert = psAcao.executeUpdate();
+
+            if (rsInsert == 1) {
+                isSuccess = true;
+                JOptionPane.showMessageDialog(null, "Renda atualizada com sucesso!");
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro > " + e.getMessage());
+        }
+        return isSuccess;
+    }
+
+    // função que faz transferência de valores entre contas;
+    public boolean FazerTransferencia(DadosUsuario dadosU, String numeroContaDestino, float valorBruto) {
+        Utils utils = new Utils();
+
+        boolean isSuccess = false;
+
+        if (utils.aContaExiste(numeroContaDestino) == false) {
+            JOptionPane.showMessageDialog(null, "A conta informada não existe.");
+            return isSuccess;
+        }
+        
+        boolean result = setSaldoMovimentacao(
+                (dadosU.getSaldoConta() - valorBruto), valorBruto, 
+                dadosU.getId_conta(), dadosU.getId(), "Transfência de R$"+valorBruto+" para -> "+numeroContaDestino);
+        
+        if(result) {
+            float dadosContaDestino[] = utils.buscarDadosConta(numeroContaDestino);
+
+            int idUsuarioDestino = (int) dadosContaDestino[0];
+            int idContaDestino = (int) dadosContaDestino[1];
+            float saldoNovoContaDestino = (dadosContaDestino[2] + valorBruto);
+
+            result = setSaldoMovimentacao(
+                saldoNovoContaDestino, valorBruto, 
+                idContaDestino, idUsuarioDestino, "Transfência de R$"+valorBruto+" de -> "+dadosU.getNumeroConta());
+            
+            if(result) {
+                dadosU.setSaldoConta(dadosU.getSaldoConta() - valorBruto);
+                isSuccess = true;
+                return isSuccess;
+            }
+        }
+        return isSuccess;
+    }
+
+    // função que atualiza o saldo na conta do usuario e insere as movimentaçãos;
+    public boolean setSaldoMovimentacao(float saldoNovo, float valorBruto, int idConta, int idUsuario, String titulo) {
+        boolean isSuccess = false;
+
+        try {
+            String alterarSaldo = "UPDATE contas SET saldo = ? WHERE id_conta=?;";
+
+            psAcao = connection.Conexao().prepareStatement(alterarSaldo);
+            psAcao.setFloat(1, saldoNovo);
+            psAcao.setInt(2, idConta);
+
+            int rsUpdate = psAcao.executeUpdate();
+            if (rsUpdate == 1) {
+                String insertUsuarioMovimentacao = "INSERT INTO movimentacoes(id_movimentacao, titulo, valor, data_criacao) VALUES (null, ?, ?, ?);";
+                psAcao = connection.Conexao().prepareStatement(insertUsuarioMovimentacao, Statement.RETURN_GENERATED_KEYS);
+                psAcao.setString(1, titulo);
+                psAcao.setFloat(2, valorBruto);
+                psAcao.setDate(3, new java.sql.Date(new java.util.Date().getTime()));
+
+                psAcao.executeUpdate();
+
+                ResultSet rsInsert = psAcao.getGeneratedKeys();
+                if (rsInsert.next()) {
+                    String inserirUsuarioMovimentacao = "INSERT INTO usuarios_fazem_movimentacoes (id_usuario, id_movimentacao) VALUES (?, ?);";
+                    psAcao = connection.Conexao().prepareStatement(inserirUsuarioMovimentacao);
+                    psAcao.setInt(1, idUsuario);
+                    psAcao.setInt(2, rsInsert.getInt(1));
+
+                    int result = psAcao.executeUpdate();
+                    if (result == 1) {
+                       isSuccess = true;
+                       return isSuccess;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro no setSaldoMovimentacao\n"+e.getMessage());
+        }
+
+        return isSuccess;
+    }
+}
