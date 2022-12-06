@@ -3,15 +3,21 @@ package interfaces;
 import java.awt.Color;
 import java.awt.Toolkit;
 import javax.swing.*;
-
-import conexao.DadosUsuario;
-import conexao.Funcoes;
-import componentes.Componentes;
 import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.ArrayList;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import conexao.*;
+import componentes.Componentes;
+
+import modelos.*;
 
 public class Sistema {
     ImageIcon avatar = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/assets/avatar.png")));
@@ -29,9 +35,11 @@ public class Sistema {
     Funcoes funcoes = new Funcoes();
     Componentes componentes = new Componentes();
     
+    TabelaMovimentacao tMovimentacao = new TabelaMovimentacao();
+    
     public void show(DadosUsuario dadosUsuario) {
         JFrame frame = new JFrame("Tela principal");
-        frame.setSize(800,730);
+        frame.setSize(900,730);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/assets/coffee.png")));
@@ -62,13 +70,13 @@ public class Sistema {
         
         JLabel lblSaldoConta = new JLabel("");
         lblSaldoConta.setText("Saldo disponível: R$ "+dadosUsuario.getSaldoConta());
-        lblSaldoConta.setBounds(520, 41, 300, 28);
+        lblSaldoConta.setBounds(620, 41, 300, 28);
         lblSaldoConta.setForeground(new Color(0, 211, 0));
         lblSaldoConta.setFont(new Font("Arial", 800, 20));
         lblSaldoConta.setBorder(null);
         
         JSeparator lblDivisao = new JSeparator();
-        lblDivisao.setBounds(0, 90, 800, 1);
+        lblDivisao.setBounds(0, 90, 900, 1);
         lblDivisao.setForeground(new Color(30, 30, 30));
         
         JLabel lblMoneyCheck = new JLabel(moneyCheck);
@@ -109,6 +117,7 @@ public class Sistema {
                     if(isSucess) {
                         dadosUsuario.setSaldoConta(dadosUsuario.getSaldoConta() + valorConvertido);
                         lblSaldoConta.setText("Saldo disponível: R$ "+dadosUsuario.getSaldoConta());
+                        atualizarMovimentacoes(dadosUsuario.getId());
                     }
                 }
             } catch (HeadlessException | NumberFormatException e) {}
@@ -141,6 +150,8 @@ public class Sistema {
                     if(isSucess) {
                         dadosUsuario.setSaldoConta((dadosUsuario.getSaldoConta() - valorConvertido));
                         lblSaldoConta.setText("Saldo disponível: R$ "+dadosUsuario.getSaldoConta());
+                        JOptionPane.showMessageDialog(null, "Saque realizado com sucesso!");
+                        atualizarMovimentacoes(dadosUsuario.getId());
                     }
                 }
             } catch (HeadlessException | NumberFormatException e) {}
@@ -169,7 +180,8 @@ public class Sistema {
                     java.util.Date data =new SimpleDateFormat("dd/MM/yyyy").parse(showInputs[2]);
                     boolean isSucess = funcoes.RegistrarCompra(dadosUsuario.getId(),  data, showInputs[0], valorConvertido);
                     if(isSucess) {
-                        JOptionPane.showMessageDialog(null, "compra registrada com sucesso, atualize as movimentações!");
+                        JOptionPane.showMessageDialog(null, "compra registrada com sucesso!");
+                        atualizarMovimentacoes(dadosUsuario.getId());
                     }
                 }
             } catch (HeadlessException | NumberFormatException e) {} catch (ParseException ex) {
@@ -209,6 +221,7 @@ public class Sistema {
                     if(isSucess) {
                         lblSaldoConta.setText("Saldo disponível: R$ "+dadosUsuario.getSaldoConta());
                         JOptionPane.showMessageDialog(null, "Transferência enviada para a conta "+entradaDeValor[1]+" com sucesso!");
+                        atualizarMovimentacoes(dadosUsuario.getId());
                     }
                 }
             } catch (HeadlessException | NumberFormatException e) {}
@@ -408,6 +421,9 @@ public class Sistema {
         btnHistory.setIconTextGap(2);
         btnHistory.setBorder(null);
         btnHistory.setMargin(new Insets(0, 8, 0, 12));
+        btnHistory.addActionListener(e -> {
+            atualizarMovimentacoes(dadosUsuario.getId());
+        });
         
         JLabel lblTituloHistorico = new JLabel("Histórico de movimentações");
         lblTituloHistorico.setBounds(440, 98, 360, 19);
@@ -416,32 +432,22 @@ public class Sistema {
         
         JSeparator lblDivisao5 = new JSeparator();
         lblDivisao5.setForeground(new Color(30, 30, 30));
-        lblDivisao5.setBounds(400, 125, 400, 1);
+        lblDivisao5.setBounds(400, 125, 500, 1);
         lblDivisao5.setMaximumSize(new Dimension(800, 750));
         
         JTable tableMovimentacoes = new JTable();
-        tableMovimentacoes.setBounds(400, 125, 400, 110);
-        tableMovimentacoes.setRowHeight(25);
-        tableMovimentacoes.setRowMargin(0);
-        tableMovimentacoes.setBackground(new Color(35, 35, 35));
-        tableMovimentacoes.setForeground(new Color(225, 225, 225));
-        tableMovimentacoes.setDropMode(DropMode.ON);
-        tableMovimentacoes.setEnabled(false);
+        tableMovimentacoes.setModel(tMovimentacao);
+        tableMovimentacoes.setEnabled(true);
+        tableMovimentacoes.setCellSelectionEnabled(false);
         tableMovimentacoes.setFont(new Font("Arial", 500, 16));
-        tableMovimentacoes.setGridColor(new Color(30, 30, 30));
-        tableMovimentacoes.setSelectionBackground(new Color(48, 48, 48));
-        tableMovimentacoes.setSelectionForeground(new Color(225, 225, 225));
-        tableMovimentacoes.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"13/05/22", "Depósito", "R$ 1300"},
-                {"13/05/22", "Saque", "R$ 50"},
-                {"12/12/23", "Compra - mouse", "R$ 120"},
-            },
-            new String [] {
-                "Data", "Descrição", "Valor"
-            }
-        ));
-        
+        tableMovimentacoes.setRowHeight(25);
+
+        JScrollPane scrollMovimentacoes = new JScrollPane();
+        scrollMovimentacoes.setViewportView(tableMovimentacoes);
+        scrollMovimentacoes.setBounds(400, 125, 500, 565);
+        scrollMovimentacoes.setBackground(new Color(35, 35, 35));
+        scrollMovimentacoes.setForeground(new Color(225, 225, 225));
+        scrollMovimentacoes.setFont(new Font("Arial", 500, 16));
         
         panel.add(btnSair);
         panel.add(lblAvatar);
@@ -471,10 +477,63 @@ public class Sistema {
         panel.add(btnHistory);
         panel.add(lblTituloHistorico);
         panel.add(lblDivisao5);
-        panel.add(tableMovimentacoes);
+        panel.add(scrollMovimentacoes);
         
         frame.add(panel);
         frame.setResizable(false);
         frame.setVisible(true);
+        
+        atualizarMovimentacoes(dadosUsuario.getId());
+    }
+    
+    private void atualizarMovimentacoes(int IdUsuario) {
+        tMovimentacao.clearList();
+
+        Conexao connection = new Conexao();
+        PreparedStatement psAcao;
+
+        java.util.List<Integer> IdsMovimentacoes = new ArrayList<>();
+
+        try {
+            String buscarIdsMovimentacoes = "select um.id_usuarios_fazem_movimentacoes from usuarios as u "
+                    + "join movimentacoes as m join usuarios_fazem_movimentacoes as um "
+                    + "where u.id_usuario=um.id_usuario and um.id_movimentacao=m.id_movimentacao and um.id_usuario=? "
+                    + "order by um.id_usuarios_fazem_movimentacoes desc;";
+            psAcao = connection.Conexao().prepareStatement(buscarIdsMovimentacoes);
+            psAcao.setInt(1, IdUsuario);
+            
+            ResultSet rs;
+            rs = psAcao.executeQuery();
+
+            while (rs.next()) {
+                System.out.println("retornados: "+rs.getInt("id_usuarios_fazem_movimentacoes"));
+                IdsMovimentacoes.add(rs.getInt("id_usuarios_fazem_movimentacoes"));
+            }
+            for (Integer idMovimentacao : IdsMovimentacoes) {
+                String buscarMovimentacao = "select um.id_usuarios_fazem_movimentacoes, m.data_criacao, m.titulo, m.valor from usuarios as u "
+                        + "join movimentacoes as m join usuarios_fazem_movimentacoes as um "
+                        + "where u.id_usuario=um.id_usuario and um.id_movimentacao=m.id_movimentacao "
+                        + "and um.id_usuarios_fazem_movimentacoes=? order by data_criacao desc;";
+                psAcao = connection.Conexao().prepareStatement(buscarMovimentacao);
+                psAcao.setInt(1, idMovimentacao);
+                rs = psAcao.executeQuery();
+
+                if (rs.next()) {
+                    Movimentacao m = new Movimentacao();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    java.util.Date dataNConvertido = new java.sql.Date(rs.getDate("data_criacao").getTime());
+                    
+                    m.setId(rs.getInt("id_usuarios_fazem_movimentacoes"));
+                    m.setDataCriacao(dateFormat.format(dataNConvertido));
+                    m.setTitulo(rs.getString("titulo"));
+                    m.setValor(rs.getFloat("valor"));
+
+                    tMovimentacao.addRow(m);
+                }
+            }
+
+        } catch (SQLException er) {
+            JOptionPane.showMessageDialog(null, "Algo deu errado ao atualizar as movimentações");
+        }
     }
 }

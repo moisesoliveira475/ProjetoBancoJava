@@ -9,9 +9,6 @@ public class Partida {
         DadosUsuario dadosUsuario = new DadosUsuario();
         Entrar entrar = new Entrar();
 
-        Administrador adm = new Administrador();
-
-//        adm.show();
         try {
             Conexao connection = new Conexao();
             connection.Conexao();

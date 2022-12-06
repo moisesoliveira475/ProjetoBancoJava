@@ -112,7 +112,7 @@ public class Funcoes {
             psAcao = connection.Conexao().prepareStatement(insertMovimentacao, Statement.RETURN_GENERATED_KEYS);
             psAcao.setString(1, tituloCompra);
             psAcao.setFloat(2, valorCompra);
-            psAcao.setDate(3, new java.sql.Date(new java.util.Date().getTime()));
+            psAcao.setDate(3, new java.sql.Date(dataGasto.getTime()));
 
             psAcao.executeUpdate();
 
@@ -207,7 +207,7 @@ public class Funcoes {
 
         boolean result = setSaldoMovimentacao(
                 (dadosU.getSaldoConta() - valorBruto), valorBruto,
-                dadosU.getId_conta(), dadosU.getId(), "Transfência de R$" + valorBruto + " para -> " + numeroContaDestino);
+                dadosU.getId_conta(), dadosU.getId(), "R$" + valorBruto + " para -> " + numeroContaDestino);
 
         if (result) {
             float dadosContaDestino[] = utils.buscarDadosConta(numeroContaDestino);
@@ -218,7 +218,7 @@ public class Funcoes {
 
             result = setSaldoMovimentacao(
                     saldoNovoContaDestino, valorBruto,
-                    idContaDestino, idUsuarioDestino, "Transfência de R$" + valorBruto + " de -> " + dadosU.getNumeroConta());
+                    idContaDestino, idUsuarioDestino, "R$" + valorBruto + " de -> " + dadosU.getNumeroConta());
 
             if (result) {
                 dadosU.setSaldoConta(dadosU.getSaldoConta() - valorBruto);
@@ -283,9 +283,6 @@ public class Funcoes {
             while (rs.next()) {
                 dados.add(rs.getString(columnName));
             }
-//            for (String dado : dados) {
-//                System.out.println(dado);
-//            }
         } catch (SQLException er) {
             System.out.println(er);
         }

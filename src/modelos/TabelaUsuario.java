@@ -1,11 +1,9 @@
 package modelos;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
+import java.util.*;
 import javax.swing.table.AbstractTableModel;
 
-public class TabelaModelo extends AbstractTableModel {
+public class TabelaUsuario extends AbstractTableModel {
 
     private List<Usuario> dados = new ArrayList<>();
     private String[] colunas = {"ID", "Nome", "Email", "Senha", "CPF", "DataNascimento", "Renda Mensal", "ID Conta", "Numero", "Senha Conta", "Tipo", "Status", "Saldo"};

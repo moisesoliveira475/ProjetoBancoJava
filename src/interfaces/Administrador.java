@@ -6,7 +6,7 @@ import java.awt.Toolkit;
 import java.util.Date;
 import javax.swing.*;
 
-import modelos.TabelaModelo;
+import modelos.TabelaUsuario;
 import modelos.Usuario;
 
 import conexao.*;
@@ -21,12 +21,10 @@ import java.util.logging.Logger;
 
 public class Administrador {
 
-    TabelaModelo tModelo = new TabelaModelo();
+    TabelaUsuario tUsuario = new TabelaUsuario();
 
     Componentes componentes = new Componentes();
-
     Funcoes funcoes = new Funcoes();
-
     Partida main = new Partida();
 
     boolean isEditRow = false;
@@ -52,7 +50,7 @@ public class Administrador {
         });
 
         JTable jTUsuarios = new JTable();
-        jTUsuarios.setModel(tModelo);
+        jTUsuarios.setModel(tUsuario);
         jTUsuarios.setEnabled(true);
 
         JScrollPane scroll = new JScrollPane();
@@ -202,7 +200,7 @@ public class Administrador {
                     p.setStatusConta(dadosConta[3]);
                     p.setSaldoConta(0);
 
-                    tModelo.addRow(p);
+                    tUsuario.addRow(p);
 
                     txtNome.setText("");
                     txtEmail.setText("");
@@ -237,19 +235,19 @@ public class Administrador {
 
                     String removerUsuario = "delete from usuarios where id_usuario=?;";
                     psAcao = connection.Conexao().prepareStatement(removerUsuario);
-                    psAcao.setInt(1, (int) tModelo.getValueAt(index, 0));
+                    psAcao.setInt(1, (int) tUsuario.getValueAt(index, 0));
 
                     int rsUpdate = psAcao.executeUpdate();
 
                     if (rsUpdate == 1) {
                         String removerConta = "delete from contas where id_conta=?;";
                         psAcao = connection.Conexao().prepareStatement(removerConta);
-                        psAcao.setInt(1, (int) tModelo.getValueAt(index, 7));
+                        psAcao.setInt(1, (int) tUsuario.getValueAt(index, 7));
 
                         rsUpdate = psAcao.executeUpdate();
 
                         if (rsUpdate == 1) {
-                            tModelo.removeRow(jTUsuarios.getSelectedRow());
+                            tUsuario.removeRow(jTUsuarios.getSelectedRow());
 
                             txtNome.setText("");
                             txtEmail.setText("");
@@ -288,16 +286,16 @@ public class Administrador {
                 boxStatusConta.setVisible(true);
                 
                 
-                txtNome.setText((String) tModelo.getValueAt(selectedLine, 1));
-                txtEmail.setText((String) tModelo.getValueAt(selectedLine, 2));
-                txtSenha.setText((String) tModelo.getValueAt(selectedLine, 3));
-                txtCpf.setText((String) tModelo.getValueAt(selectedLine, 4));
-                calDataNascimento.setDate((Date) tModelo.getValueAt(selectedLine, 5));
-                txtRendaMensal.setText(tModelo.getValueAt(selectedLine, 6).toString());
-                txtSenhaConta.setText(tModelo.getValueAt(selectedLine, 9).toString());
-                int indexTipoConta = tModelo.getValueAt(selectedLine, 10).toString().equals("p") ? 0 : 1;
+                txtNome.setText((String) tUsuario.getValueAt(selectedLine, 1));
+                txtEmail.setText((String) tUsuario.getValueAt(selectedLine, 2));
+                txtSenha.setText((String) tUsuario.getValueAt(selectedLine, 3));
+                txtCpf.setText((String) tUsuario.getValueAt(selectedLine, 4));
+                calDataNascimento.setDate((Date) tUsuario.getValueAt(selectedLine, 5));
+                txtRendaMensal.setText(tUsuario.getValueAt(selectedLine, 6).toString());
+                txtSenhaConta.setText(tUsuario.getValueAt(selectedLine, 9).toString());
+                int indexTipoConta = tUsuario.getValueAt(selectedLine, 10).toString().equals("p") ? 0 : 1;
                 boxTipoConta.setSelectedIndex(indexTipoConta);
-                boxStatusConta.setSelectedIndex(Integer.parseInt(tModelo.getValueAt(selectedLine, 11).toString()));
+                boxStatusConta.setSelectedIndex(Integer.parseInt(tUsuario.getValueAt(selectedLine, 11).toString()));
             }
 
             isEditRow = true;
@@ -320,22 +318,22 @@ public class Administrador {
             boolean result = funcoes.atualizarDadosUsuario(
                     txtNome.getText(), txtEmail.getText(), txtSenha.getText(), txtCpf.getText(),
                     calDataNascimento.getDate(), txtRendaMensal.getText(),
-                    Integer.parseInt(tModelo.getValueAt(selectedLine, 0).toString()),
+                    Integer.parseInt(tUsuario.getValueAt(selectedLine, 0).toString()),
                     txtSenhaConta.getText(), selectedTipoConta,
                     Integer.toString(boxStatusConta.getSelectedIndex()),
-                    Integer.parseInt(tModelo.getValueAt(selectedLine, 7).toString())
+                    Integer.parseInt(tUsuario.getValueAt(selectedLine, 7).toString())
             );
             
             if(result) {
-                 tModelo.setValueAt(txtNome.getText(), selectedLine, 1);
-                tModelo.setValueAt(txtEmail.getText(), selectedLine, 2);
-                tModelo.setValueAt(txtSenha.getText(), selectedLine, 3);
-                tModelo.setValueAt(txtCpf.getText(), selectedLine, 4);
-                tModelo.setValueAt(calDataNascimento.getDate(), selectedLine, 5);
-                tModelo.setValueAt(txtRendaMensal.getText(), selectedLine, 6);
-                tModelo.setValueAt(txtSenhaConta.getText(), selectedLine, 9);
-                tModelo.setValueAt(selectedTipoConta, selectedLine, 10);
-                tModelo.setValueAt(Integer.toString(boxStatusConta.getSelectedIndex()), selectedLine, 11);
+                 tUsuario.setValueAt(txtNome.getText(), selectedLine, 1);
+                tUsuario.setValueAt(txtEmail.getText(), selectedLine, 2);
+                tUsuario.setValueAt(txtSenha.getText(), selectedLine, 3);
+                tUsuario.setValueAt(txtCpf.getText(), selectedLine, 4);
+                tUsuario.setValueAt(calDataNascimento.getDate(), selectedLine, 5);
+                tUsuario.setValueAt(txtRendaMensal.getText(), selectedLine, 6);
+                tUsuario.setValueAt(txtSenhaConta.getText(), selectedLine, 9);
+                tUsuario.setValueAt(selectedTipoConta, selectedLine, 10);
+                tUsuario.setValueAt(Integer.toString(boxStatusConta.getSelectedIndex()), selectedLine, 11);
 
                 txtNome.setText("");
                 txtEmail.setText("");
@@ -406,7 +404,7 @@ public class Administrador {
     }
 
     private void atualizarLista() {
-        tModelo.clearList();
+        tUsuario.clearList();
 
         Conexao connection = new Conexao();
         PreparedStatement psAcao;
@@ -450,7 +448,7 @@ public class Administrador {
                     p.setStatusConta(rs.getString("status"));
                     p.setSaldoConta(rs.getFloat("saldo"));
 
-                    tModelo.addRow(p);
+                    tUsuario.addRow(p);
                 }
             }
 
