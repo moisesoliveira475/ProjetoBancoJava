@@ -9,14 +9,21 @@ public class Partida {
         DadosUsuario dadosUsuario = new DadosUsuario();
         Entrar entrar = new Entrar();
 
+        Administrador adm = new Administrador();
+
+//        adm.show();
         try {
             Conexao connection = new Conexao();
-            connection.Conexao();    
+            connection.Conexao();
 
             entrar.show(dadosUsuario);
-            
+
         } catch (SQLException e) {
             System.out.println("Erro -> " + e);
         }
+    }
+
+    public void executeMain() {
+        main(null);
     }
 }

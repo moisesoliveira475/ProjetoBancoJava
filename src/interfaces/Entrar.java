@@ -5,10 +5,12 @@ import java.awt.Toolkit;
 import javax.swing.*;
 
 import conexao.Conexao;
+import componentes.*;
 import conexao.DadosUsuario;
 
 public class Entrar {
     
+    Componentes componentes = new Componentes();
     Conexao conexao = new Conexao();
     
     public void show(DadosUsuario dadosUsuario) {
@@ -25,6 +27,25 @@ public class Entrar {
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setBackground(Color.darkGray);
+        
+        JButton btnAdm = new JButton();
+        btnAdm.setBounds(5, 5, 125, 30);
+        btnAdm.setText("Painel Adminstrativo");
+        btnAdm.setBorder(null);
+        btnAdm.setBorderPainted(false);
+        btnAdm.setFocusPainted(false);
+        btnAdm.setBackground(Color.darkGray);
+        btnAdm.setForeground(new Color(100, 100, 100));
+        btnAdm.addActionListener(l -> {
+            
+            String senha = componentes.ShowInputPassword("Digite a senha de acesso");
+            if("senhaforte".equals(senha)) {
+                Administrador adm = new Administrador();
+                frame.setVisible(false);
+                
+                adm.show();
+            }
+        });
         
         ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/assets/coffee.png")));
         JLabel imageIcon = new JLabel(icon);
@@ -75,6 +96,7 @@ public class Entrar {
             cadastrar.show(dadosUsuario);
         });
         
+        panel.add(btnAdm);
         panel.add(imageIcon);
         panel.add(lblUsuario);
         panel.add(txtUsuario);

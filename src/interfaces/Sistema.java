@@ -74,8 +74,9 @@ public class Sistema {
         JLabel lblMoneyCheck = new JLabel(moneyCheck);
         lblMoneyCheck.setBounds(20, 105, 18, 18);
         
-        JLabel lblTituloConta = new JLabel("Conta");
-        lblTituloConta.setBounds(45, 105, 80, 19);
+        String tipoContaConvertido = dadosUsuario.getTipoConta().equals("p") ? "Poupança" : "Corrente";
+        JLabel lblTituloConta = new JLabel("Conta "+tipoContaConvertido+": "+dadosUsuario.getNumeroConta());
+        lblTituloConta.setBounds(45, 105, 300, 19);
         lblTituloConta.setForeground(new Color(225, 225, 225));
         lblTituloConta.setFont(new Font("Arial", 500, 20));
         
@@ -90,14 +91,21 @@ public class Sistema {
         btnDeposito.setMargin(new Insets(0, 8, 0, 12));
         btnDeposito.addActionListener(btnDepositoE -> {
             try {
-                String entradaDeSenha = JOptionPane.showInputDialog(null, "Digite a sua senha primeiro");
+                if(dadosUsuario.getStatusConta().equals("0")) {
+                    JOptionPane.showMessageDialog(null, "Sua conta está bloqueada para essa ação\ncontate o administrador para mais informações!");
+                    return;
+                }
+                
+                String entradaDeSenha = componentes.ShowInputPassword("Digite a senha de acesso");
                 if(entradaDeSenha != null && entradaDeSenha.equals(dadosUsuario.getSenha())) {
                     String entradaDeValor = JOptionPane.showInputDialog(null, "Digite o valor a depositar");
                     float valorConvertido = Float.parseFloat(entradaDeValor);
                     
                     if(entradaDeValor.isEmpty() || valorConvertido == 0) { return; }
                     
-                    boolean isSucess = funcoes.FazerDeposito(dadosUsuario.getId_conta(), dadosUsuario.getId(), dadosUsuario.getSaldoConta() + valorConvertido, valorConvertido);
+                    boolean isSucess = funcoes.FazerDeposito(
+                            dadosUsuario.getId_conta(), dadosUsuario.getId(), dadosUsuario.getSaldoConta() + valorConvertido, 
+                            valorConvertido);
                     if(isSucess) {
                         dadosUsuario.setSaldoConta(dadosUsuario.getSaldoConta() + valorConvertido);
                         lblSaldoConta.setText("Saldo disponível: R$ "+dadosUsuario.getSaldoConta());
@@ -117,7 +125,7 @@ public class Sistema {
         btnSaque.setMargin(new Insets(0, 8, 0, 12));
         btnSaque.addActionListener(btnSaqueE -> {
             try {
-                String entradaDeSenha = JOptionPane.showInputDialog(null, "Digite a sua senha primeiro");
+                String entradaDeSenha = componentes.ShowInputPassword("Digite a senha de acesso");
                 if(entradaDeSenha != null && entradaDeSenha.equals(dadosUsuario.getSenha())) {  
                     String entradaDeValor = JOptionPane.showInputDialog(null, "Digite o valor a sacar");
                     float valorConvertido = Float.parseFloat(entradaDeValor);
@@ -149,7 +157,7 @@ public class Sistema {
         btnAdicionarCompra.setMargin(new Insets(0, 8, 0, 12));
         btnAdicionarCompra.addActionListener(btnAdicionarCompraE -> {
             try {
-                String entradaDeSenha = JOptionPane.showInputDialog(null, "Digite a sua senha primeiro");
+                String entradaDeSenha = componentes.ShowInputPassword("Digite a senha de acesso");
                 if(entradaDeSenha != null && entradaDeSenha.equals(dadosUsuario.getSenha())) {  
                     
                     String[] showInputs = componentes.ShowTwoInputsAndDate("Titulo do gasto", "Valor ex(1, 1.5)");
@@ -179,8 +187,13 @@ public class Sistema {
         btnTransferir.setBorder(null);
         btnTransferir.setMargin(new Insets(0, 8, 0, 12));
         btnTransferir.addActionListener(btnTransferirE -> {
+            if(dadosUsuario.getStatusConta().equals("0")) {
+                JOptionPane.showMessageDialog(null, "Sua conta está bloqueada para essa ação\ncontate o administrador para mais informações!");
+                return;
+            }
+            
             try {
-                String entradaDeSenha = JOptionPane.showInputDialog(null, "Digite a sua senha primeiro");
+                String entradaDeSenha = componentes.ShowInputPassword("Digite a senha de acesso");
                 if(entradaDeSenha != null && entradaDeSenha.equals(dadosUsuario.getSenha())) {  
                     String[] entradaDeValor = componentes.ShowTwoInputs("Valor da tranferência:", "Número da conta:");
                     float valorConvertido = Float.parseFloat(entradaDeValor[0]);

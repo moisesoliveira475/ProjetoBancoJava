@@ -8,6 +8,7 @@ import java.awt.Toolkit;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.*;
 
 import com.toedter.calendar.*;
 
@@ -16,7 +17,9 @@ public class Cadastrar {
     Sistema sistema = new Sistema();
     
     Conexao conexao = new Conexao();
-   
+    
+    Utils utils = new Utils();
+    
     public void show(DadosUsuario dadosUsuario) {
         JFrame frame = new JFrame("Cadastrar");
         frame.setSize(786,480);
@@ -106,6 +109,7 @@ public class Cadastrar {
         lblSubtituloBancario.setBounds(380, 66, 183, 21);
         lblSubtituloBancario.setForeground(new Color(225, 225, 225));
         lblSubtituloBancario.setFont(new Font("Arial", 500, 18));
+
         
         JLabel lblNumeroConta = new JLabel("Nº de conta");
         lblNumeroConta.setBounds(391, 95, 79, 17);
@@ -122,7 +126,7 @@ public class Cadastrar {
         lblSenhaConta.setBounds(391, 153, 104, 17);
         lblSenhaConta.setForeground(new Color(225, 225, 225));
         
-        JTextField txtSenhaConta = new JTextField();
+        JPasswordField txtSenhaConta = new JPasswordField();
         txtSenhaConta.setBounds(380, 171, 360, 30);
         txtSenhaConta.setBackground(new Color(82,82,82));
         txtSenhaConta.setBorder(null);
@@ -169,12 +173,13 @@ public class Cadastrar {
         btnContinuar.addActionListener(e -> {
             try {
                 if(txtNome.getText().isEmpty()||txtCpf.getText().isEmpty()||txtEmail.getText().isEmpty()||
-                        txtSenha.getText().isEmpty()||txtSenhaConta.getText().isEmpty()||calDataNascimento.getDate() == null) {
+                        txtSenha.getText().isEmpty()||new String(txtSenhaConta.getPassword()).isEmpty()||calDataNascimento.getDate() == null) {
                     JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos");
                     return;
                 }
                 
                 float rM = Float.parseFloat(txtRendaMensal.getText());
+                String numeroGerado = utils.gerarNumeroConta();
                 
                 boolean result = conexao.Cadastrar(dadosUsuario,
                         txtNome.getText(), 
@@ -183,10 +188,12 @@ public class Cadastrar {
                         txtSenha.getText(), 
                         calDataNascimento.getDate(),
                         rM,
-                        txtSenhaConta.getText(), 
+                        numeroGerado,
+                        new String(txtSenhaConta.getPassword()), 
                         boxTipoConta.getSelectedItem().toString(), 
                         boxStatusConta.getSelectedItem().toString()); 
                 if(result) {
+                    JOptionPane.showMessageDialog(null, "conta criada com sucesso, anote o numero da sua conta: "+numeroGerado);
                     frame.setVisible(false);
                     sistema.show(dadosUsuario);
                 }

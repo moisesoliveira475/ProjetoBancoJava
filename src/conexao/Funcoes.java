@@ -1,14 +1,17 @@
 package conexao;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 import utils.*;
 
 public class Funcoes {
-        Conexao connection = new Conexao();
-        PreparedStatement psAcao;
-    
+
+    Conexao connection = new Conexao();
+    PreparedStatement psAcao;
+
     // função para realizar um depósito;
     public boolean FazerDeposito(int idConta, int idUsuario, float valorADepositar, float valorBruto) {
         boolean isSuccess = false;
@@ -201,12 +204,12 @@ public class Funcoes {
             JOptionPane.showMessageDialog(null, "A conta informada não existe.");
             return isSuccess;
         }
-        
+
         boolean result = setSaldoMovimentacao(
-                (dadosU.getSaldoConta() - valorBruto), valorBruto, 
-                dadosU.getId_conta(), dadosU.getId(), "Transfência de R$"+valorBruto+" para -> "+numeroContaDestino);
-        
-        if(result) {
+                (dadosU.getSaldoConta() - valorBruto), valorBruto,
+                dadosU.getId_conta(), dadosU.getId(), "Transfência de R$" + valorBruto + " para -> " + numeroContaDestino);
+
+        if (result) {
             float dadosContaDestino[] = utils.buscarDadosConta(numeroContaDestino);
 
             int idUsuarioDestino = (int) dadosContaDestino[0];
@@ -214,10 +217,10 @@ public class Funcoes {
             float saldoNovoContaDestino = (dadosContaDestino[2] + valorBruto);
 
             result = setSaldoMovimentacao(
-                saldoNovoContaDestino, valorBruto, 
-                idContaDestino, idUsuarioDestino, "Transfência de R$"+valorBruto+" de -> "+dadosU.getNumeroConta());
-            
-            if(result) {
+                    saldoNovoContaDestino, valorBruto,
+                    idContaDestino, idUsuarioDestino, "Transfência de R$" + valorBruto + " de -> " + dadosU.getNumeroConta());
+
+            if (result) {
                 dadosU.setSaldoConta(dadosU.getSaldoConta() - valorBruto);
                 isSuccess = true;
                 return isSuccess;
@@ -256,15 +259,81 @@ public class Funcoes {
 
                     int result = psAcao.executeUpdate();
                     if (result == 1) {
-                       isSuccess = true;
-                       return isSuccess;
+                        isSuccess = true;
+                        return isSuccess;
                     }
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro no setSaldoMovimentacao\n"+e.getMessage());
+            JOptionPane.showMessageDialog(null, "Erro no setSaldoMovimentacao\n" + e.getMessage());
         }
-
         return isSuccess;
     }
+
+    // buscar usuarios;
+    public List<String> buscarUsuarios(String columnName) {
+        List<String> dados = new ArrayList<>();
+        try {
+            String buscarDados = "select * from usuarios;";
+            psAcao = connection.Conexao().prepareStatement(buscarDados);
+
+            ResultSet rs;
+            rs = psAcao.executeQuery();
+
+            while (rs.next()) {
+                dados.add(rs.getString(columnName));
+            }
+//            for (String dado : dados) {
+//                System.out.println(dado);
+//            }
+        } catch (SQLException er) {
+            System.out.println(er);
+        }
+
+        return dados;
+    }
+
+    public boolean atualizarDadosUsuario(
+            String nome, String email, String senha, String cpf,
+            java.util.Date dataNascimento, String rendaMensal, int idUsuario,
+            String senhaConta, String tipoConta, String StatusConta, int idConta
+    ) {
+        boolean isSuccess = false;
+
+        try {
+            String atualizarUsuario = "UPDATE usuarios SET nome=?, email=?, senha=?, cpf=?, data_nascimento=?, renda_mensal=? WHERE id_usuario=?;";
+            psAcao = connection.Conexao().prepareStatement(atualizarUsuario);
+            psAcao.setString(1, nome);
+            psAcao.setString(2, email);
+            psAcao.setString(3, senha);
+            psAcao.setString(4, cpf);
+            java.sql.Date dataNascimentoConvertido = new java.sql.Date(dataNascimento.getTime());
+            psAcao.setDate(5, dataNascimentoConvertido);
+            psAcao.setFloat(6, Float.parseFloat(rendaMensal));
+            psAcao.setInt(7, idUsuario);
+
+            int rsInsert = psAcao.executeUpdate();
+
+            if (rsInsert == 1) {
+                String atualizarConta = "UPDATE contas SET senha_conta=?, tipo=?, status=? WHERE id_conta=?;";
+                psAcao = connection.Conexao().prepareStatement(atualizarConta);
+                psAcao.setString(1, senhaConta);
+                psAcao.setString(2, tipoConta);
+                psAcao.setString(3, StatusConta);
+                psAcao.setInt(4, idConta);
+
+                rsInsert = psAcao.executeUpdate();
+
+                if (rsInsert == 1) {
+                    isSuccess = true;
+                    JOptionPane.showMessageDialog(null, "dados atualizados com sucesso!");
+                }
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro > " + e.getMessage());
+        }
+        return isSuccess;
+    }
+;
 }

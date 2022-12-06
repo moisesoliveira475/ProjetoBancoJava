@@ -1,23 +1,23 @@
-package conexao;
+package modelos;
 
 import java.util.Date;
 
-public class DadosUsuario {
+public class Usuario {
     private int id;
     private String nome;
     private String email;
     private String senha;
     private String cpf;
-    private Date data_nascimento;
-    private float renda_mensal;
-    private int id_conta;
-
+    private Date dataNascimento;
+    private float rendaMensal;
+    private int idConta;
+    
     private String numeroConta;
     private String senhaConta;
     private String tipoConta;
-    private float saldoConta;
     private String statusConta;
-    
+    private float saldoConta;
+
     public String getNumeroConta() {
         return numeroConta;
     }
@@ -25,7 +25,7 @@ public class DadosUsuario {
     public void setNumeroConta(String numeroConta) {
         this.numeroConta = numeroConta;
     }
-    
+
     public String getSenhaConta() {
         return senhaConta;
     }
@@ -42,6 +42,14 @@ public class DadosUsuario {
         this.tipoConta = tipoConta;
     }
 
+    public String getStatusConta() {
+        return statusConta;
+    }
+
+    public void setStatusConta(String statusConta) {
+        this.statusConta = statusConta;
+    }
+
     public float getSaldoConta() {
         return saldoConta;
     }
@@ -50,14 +58,6 @@ public class DadosUsuario {
         this.saldoConta = saldoConta;
     }
 
-    public String getStatusConta() {
-        return statusConta;
-    }
-
-    public void setStatusConta(String statusConta) {
-        this.statusConta = statusConta;
-    }
-    
     public int getId() {
         return id;
     }
@@ -98,28 +98,28 @@ public class DadosUsuario {
         this.cpf = cpf;
     }
 
-    public Date getData_nascimento() {
-        return data_nascimento;
+    public Date getDataNascimento() {
+        return dataNascimento;
     }
 
-    public void setData_nascimento(Date data_nascimento) {
-        this.data_nascimento = data_nascimento;
+    public void setDataNascimento(Date dataNascimento) {
+        this.dataNascimento = dataNascimento;
     }
 
-    public float getRenda_mensal() {
-        return renda_mensal;
+    public float getRendaMensal() {
+        return rendaMensal;
     }
 
-    public void setRenda_mensal(float renda_mensal) {
-        this.renda_mensal = renda_mensal;
+    public void setRendaMensal(float rendaMensal) {
+        this.rendaMensal = rendaMensal;
     }
 
-    public int getId_conta() {
-        return id_conta;
+    public int getIdConta() {
+        return idConta;
     }
 
-    public void setId_conta(int id_conta) {
-        this.id_conta = id_conta;
+    public void setIdConta(int idConta) {
+        this.idConta = idConta;
     }
 
     
