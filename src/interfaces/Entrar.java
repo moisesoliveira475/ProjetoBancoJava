@@ -55,7 +55,7 @@ public class Entrar {
         lblUsuario.setBounds(25, 140, 68, 17);
         lblUsuario.setForeground(textWhite);
         
-        JTextField txtUsuario = new JTextField("erik@gmail.com");
+        JTextField txtUsuario = new JTextField("");
         txtUsuario.setBounds(20, 158, 340, 30);
         txtUsuario.setBackground(backInput);
         txtUsuario.setBorder(null);
@@ -64,7 +64,7 @@ public class Entrar {
         lblSenha.setBounds(25, 198, 42, 17);
         lblSenha.setForeground(textWhite);
         
-        JPasswordField txtSenha = new JPasswordField("senhaforte");
+        JPasswordField txtSenha = new JPasswordField("");
         txtSenha.setBounds(20, 216, 340, 30);
         txtSenha.setBackground(backInput);
         txtSenha.setBorder(null);
