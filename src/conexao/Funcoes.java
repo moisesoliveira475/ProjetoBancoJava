@@ -138,7 +138,7 @@ public class Funcoes {
     }
 
     // função que adicionar um novo gasto essencial e insere nos registros de gastos;
-    public boolean AdicionarGastoEssencial(int idUsuario, java.util.Date dataGasto, String tituloGasto, float valorGasto) {
+    public boolean AdicionarGastoEssencial(int idUsuario, String tituloGasto, float valorGasto) {
         boolean isSuccess = false;
 
         try {
@@ -151,11 +151,10 @@ public class Funcoes {
 
             ResultSet rsInsert = psAcao.getGeneratedKeys();
             if (rsInsert.next()) {
-                String inserirUsuarioGasto = "INSERT INTO usuarios_registram_gastos(data, id_usuario, id_gasto) VALUES (?, ?, ?);";
+                String inserirUsuarioGasto = "INSERT INTO usuarios_registram_gastos(id_usuario, id_gasto) VALUES (?, ?);";
                 psAcao = connection.Conexao().prepareStatement(inserirUsuarioGasto);
-                psAcao.setDate(1, new java.sql.Date(dataGasto.getTime()));
-                psAcao.setInt(2, idUsuario);
-                psAcao.setInt(3, rsInsert.getInt(1));
+                psAcao.setInt(1, idUsuario);
+                psAcao.setInt(2, rsInsert.getInt(1));
 
                 int result = psAcao.executeUpdate();
                 if (result == 1) {
@@ -163,6 +162,42 @@ public class Funcoes {
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Não foi possivel adicionar o gasto");
+                return isSuccess;
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro > " + e.getMessage());
+        }
+        return isSuccess;
+    }
+    
+    // função que adicionar um novo gasto essencial e insere nos registros de gastos;
+    public boolean AdicionarMeta(int idUsuario, String titulo, java.util.Date dataFinal, float valorAportado, float valorEstipulado) {
+        boolean isSuccess = false;
+
+        try {
+            String inserirGasto = "insert into metas(id_meta, titulo, valor_estipulado, valor_aportado, data_inicial, data_final) VALUES (null, ?, ?, ?, ?, ?);";
+            psAcao = connection.Conexao().prepareStatement(inserirGasto, Statement.RETURN_GENERATED_KEYS);
+            psAcao.setString(1, titulo);
+            psAcao.setFloat(2, valorEstipulado);
+            psAcao.setFloat(3, valorAportado);
+            psAcao.setDate(4, new java.sql.Date(new java.util.Date().getTime()));
+            psAcao.setDate(5, new java.sql.Date(dataFinal.getTime()));
+
+            psAcao.executeUpdate();
+
+            ResultSet rsInsert = psAcao.getGeneratedKeys();
+            if (rsInsert.next()) {
+                String inserirUsuarioGasto = "insert into usuarios_criam_metas(id_usuarios_criam_metas, id_usuario, id_meta) VALUES (null, ?, ?);";
+                psAcao = connection.Conexao().prepareStatement(inserirUsuarioGasto);
+                psAcao.setInt(1, idUsuario);
+                psAcao.setInt(2, rsInsert.getInt(1));
+
+                int result = psAcao.executeUpdate();
+                if (result == 1) {
+                    isSuccess = true;
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Não foi possivel criar a meta!");
                 return isSuccess;
             }
         } catch (SQLException e) {

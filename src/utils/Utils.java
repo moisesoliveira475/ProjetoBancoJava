@@ -74,4 +74,13 @@ public class Utils {
 
         return dados;
     }
+   
+   // recebe um array de valores e faz a soma;
+   public float CalculoGastos(java.util.List<Float> contas) {
+       float result = 0;
+       for(float conta:contas) {
+           result+=conta;
+       }
+       return result;
+   }
 }

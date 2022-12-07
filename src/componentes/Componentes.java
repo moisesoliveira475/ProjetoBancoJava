@@ -132,7 +132,50 @@ public class Componentes {
             boxTipo.getSelectedItem().toString().equals("Poupança") ? "p" : "c", 
             boxStatus.getSelectedItem().toString().equals("Ativada")  ? "1" : "0"
         };
-        System.out.println(Arrays.toString(results));
+        return results;
+    }
+    
+    // inputs para adicionar meta
+    public String[] ShowInpusForAddGoal() {
+        
+        JTextField titulo = new JTextField();
+        JTextField dataFinal = new JTextField();
+        dataFinal.setText("exemplo: 10/10/1010");
+        JTextField valorAportado = new JTextField();
+        JTextField valorEstipulado = new JTextField();
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        panel.add(new JLabel("Titulo da meta: "));
+        panel.add(titulo);
+        panel.add(Box.createVerticalStrut(10)); // a spacer
+        panel.add(new JLabel("Prazo para a meta: "));
+        panel.add(dataFinal);
+        panel.add(Box.createVerticalStrut(10)); // a spacer
+        panel.add(new JLabel("Valor Aportado: "));
+        panel.add(valorAportado);
+        panel.add(Box.createVerticalStrut(10)); // a spacer
+        panel.add(new JLabel("Valor Estipulado: "));
+        panel.add(valorEstipulado);
+
+        int result = JOptionPane.showConfirmDialog(null, panel,
+                "Entre com os valores", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            if (titulo.getText().equals("") || dataFinal.getText().equals("exemplo: 10/10/1010") 
+                    || dataFinal.getText().equals("") || valorAportado.getText().equals("") || valorEstipulado.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos");
+                return null;
+            }
+        }
+
+        String[] results = {
+            titulo.getText(), 
+            dataFinal.getText(), 
+            valorAportado.getText(),
+            valorEstipulado.getText()
+        };
+        
         return results;
     }
     
