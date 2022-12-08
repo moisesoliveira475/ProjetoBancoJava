@@ -12,7 +12,6 @@ public class Funcoes {
     Conexao connection = new Conexao();
     PreparedStatement psAcao;
 
-    // função para realizar um depósito;
     public boolean FazerDeposito(int idConta, int idUsuario, float valorADepositar, float valorBruto) {
         boolean isSuccess = false;
 

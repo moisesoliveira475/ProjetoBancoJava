@@ -1,16 +1,17 @@
 package interfaces;
 
 import com.toedter.calendar.JDateChooser;
-import java.awt.Color;
-import java.awt.Toolkit;
-import java.util.Date;
-import javax.swing.*;
 
 import modelos.TabelaUsuario;
 import modelos.Usuario;
 
 import conexao.*;
 import componentes.*;
+
+import java.awt.Color;
+import java.awt.Toolkit;
+import java.util.Date;
+import javax.swing.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -172,7 +173,6 @@ public class Administrador {
             try {
                 String[] dadosConta = componentes.ShowInpusForCreateAccount();
                 if ("1".equals(dadosConta[0])) {
-                    System.out.println(dadosConta[0]);
                     isAddUser = false;
                     txtNome.setText("");
                     txtEmail.setText("");
@@ -316,10 +316,8 @@ public class Administrador {
             if (isEditRow == false || txtNome.getText().isEmpty() || txtCpf.getText().isEmpty() || txtEmail.getText().isEmpty()
                     || txtSenha.getText().isEmpty() || calDataNascimento.getDate() == null
                     || txtRendaMensal.getText().isEmpty() || txtSenhaConta.getText().isEmpty()) {
-                System.out.println("vazio");
                 return;
             } else if (isAddUser == true) {
-                System.out.println("add user ativado");
                 return;
             }
 

@@ -1,6 +1,5 @@
 package componentes;
 
-import java.util.Arrays;
 import javax.swing.*;
 import utils.*;
 
@@ -27,7 +26,6 @@ public class Componentes {
         return new String(input.getPassword());
     };
     
-    // componente com dois inputs em um só alerta;
     public String[] ShowTwoInputs(String oneTitle, String twoTitle) {
         JTextField oneInput = new JTextField(5);
         JTextField twoInput = new JTextField(5);
