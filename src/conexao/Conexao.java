@@ -1,14 +1,18 @@
 package conexao;
 
 import java.sql.*;
+
+import utils.Utils;
 import javax.swing.JOptionPane;
 
 public class Conexao {
 
     private static Connection connection;
 
+    Utils utils = new Utils();
+
     public Connection Conexao() throws SQLException {
-        String user = "root", pass = "root";
+        String user = "root", pass = "475720SQLmoi.";
 
         String URL = "jdbc:mysql://" + user + "@localhost:3306/bancouam";
 

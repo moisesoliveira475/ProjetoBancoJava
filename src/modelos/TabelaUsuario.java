@@ -6,8 +6,7 @@ import javax.swing.table.AbstractTableModel;
 public class TabelaUsuario extends AbstractTableModel {
 
     private List<Usuario> dados = new ArrayList<>();
-    private String[] colunas = {"ID", "Nome", "Email", "Senha", "CPF", "DataNascimento", 
-        "Renda Mensal", "ID Conta", "Numero", "Senha Conta", "Tipo", "Status", "Saldo"};
+    private String[] colunas = {"ID", "Nome", "Email", "Senha", "CPF", "DataNascimento", "Renda Mensal", "ID Conta", "Numero", "Senha Conta", "Tipo", "Status", "Saldo"};
 
     @Override
     public String getColumnName(int column) {
