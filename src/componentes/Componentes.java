@@ -121,9 +121,14 @@ public class Componentes {
         int result = JOptionPane.showConfirmDialog(null, panel,
                 "Entre com os valores", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
-            if (senha.getPassword().equals("") || senha.getText().equals("")) {
+            if (senha.getPassword().equals("") || new String(senha.getPassword()).equals("")) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos");
             }
+        } else if(result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
+            String[] results = {
+                "1"
+            };
+            return results;
         }
 
         String[] results = {

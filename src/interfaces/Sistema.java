@@ -161,7 +161,7 @@ public class Sistema {
                         return;
                     }
 
-                    boolean isSucess = funcoes.FazerSaque(dadosUsuario.getId_conta(), dadosUsuario.getId(), (dadosUsuario.getSaldoConta() - valorConvertido));
+                    boolean isSucess = funcoes.FazerSaque(dadosUsuario.getId_conta(), dadosUsuario.getId(), (dadosUsuario.getSaldoConta() - valorConvertido), valorConvertido);
                     if (isSucess) {
                         dadosUsuario.setSaldoConta((dadosUsuario.getSaldoConta() - valorConvertido));
                         lblSaldoConta.setText("Saldo disponível: R$ " + dadosUsuario.getSaldoConta());
@@ -402,6 +402,7 @@ public class Sistema {
                             if (rsUGastoUpdate == 1) {
                                 JOptionPane.showMessageDialog(null, "Gasto apagado com sucesso.");
                                 tGastos.removeRow(index);
+                                gastosContas.clear();
                             }
                         }
                     }

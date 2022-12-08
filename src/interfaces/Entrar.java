@@ -38,7 +38,7 @@ public class Entrar {
         btnAdm.setForeground(new Color(100, 100, 100));
         btnAdm.addActionListener(l -> {
             
-            String senha = componentes.ShowInputPassword("Digite a senha de acesso");
+            String senha = componentes.ShowInputPassword("Digite a senha de acesso -> dica: senhaforte");
             if("senhaforte".equals(senha)) {
                 Administrador adm = new Administrador();
                 frame.setVisible(false);
@@ -60,8 +60,8 @@ public class Entrar {
         txtUsuario.setBackground(backInput);
         txtUsuario.setBorder(null);
         
-        JLabel lblSenha = new JLabel("Senha");
-        lblSenha.setBounds(25, 198, 42, 17);
+        JLabel lblSenha = new JLabel("Senha da conta");
+        lblSenha.setBounds(25, 198, 100, 17);
         lblSenha.setForeground(textWhite);
         
         JPasswordField txtSenha = new JPasswordField("");

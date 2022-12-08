@@ -18,7 +18,6 @@ public class Funcoes {
 
         try {
             String inserirSaldo = "update contas set saldo = ? WHERE id_conta=?;";
-
             psAcao = connection.Conexao().prepareStatement(inserirSaldo);
             psAcao.setFloat(1, valorADepositar);
             psAcao.setInt(2, idConta);
@@ -58,7 +57,7 @@ public class Funcoes {
     }
 
     // função para fazer saque;
-    public boolean FazerSaque(int idConta, int idUsuario, float saldoNovo) {
+    public boolean FazerSaque(int idConta, int idUsuario, float saldoNovo, float saldoBruto) {
         boolean isSuccess = false;
 
         try {
@@ -73,7 +72,7 @@ public class Funcoes {
                 String insertUsuarioMovimentacao = "INSERT INTO movimentacoes(id_movimentacao, titulo, valor, data_criacao) VALUES (null, ?, ?, ?);";
                 psAcao = connection.Conexao().prepareStatement(insertUsuarioMovimentacao, Statement.RETURN_GENERATED_KEYS);
                 psAcao.setString(1, "Saque");
-                psAcao.setFloat(2, saldoNovo);
+                psAcao.setFloat(2, saldoBruto);
                 psAcao.setDate(3, new java.sql.Date(new java.util.Date().getTime()));
 
                 psAcao.executeUpdate();

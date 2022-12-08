@@ -28,6 +28,7 @@ public class Administrador {
     Partida main = new Partida();
 
     boolean isEditRow = false;
+    boolean isAddUser = false;
 
     public void show() {
         JFrame frame = new JFrame("Administrador");
@@ -87,8 +88,8 @@ public class Administrador {
         txtEmail.setForeground(new Color(225, 225, 225));
         txtEmail.setBorder(null);
 
-        JLabel lblSenha = new JLabel("Senha");
-        lblSenha.setBounds(685, 20, 42, 17);
+        JLabel lblSenha = new JLabel("Senha, MAX: 12");
+        lblSenha.setBounds(685, 20, 100, 17);
         lblSenha.setForeground(new Color(225, 225, 225));
 
         JTextField txtSenha = new JTextField();
@@ -115,8 +116,8 @@ public class Administrador {
         JDateChooser calDataNascimento = new JDateChooser();
         calDataNascimento.setBounds(200, 89, 170, 26);
 
-        JLabel lblSenhaConta = new JLabel("Senha da conta");
-        lblSenhaConta.setBounds(396, 70, 110, 17);
+        JLabel lblSenhaConta = new JLabel("Senha da conta, MAX: 6");
+        lblSenhaConta.setBounds(396, 70, 140, 17);
         lblSenhaConta.setForeground(new Color(225, 225, 225));
         lblSenhaConta.setVisible(false);
 
@@ -163,15 +164,26 @@ public class Administrador {
             if (txtNome.getText().isEmpty() || txtCpf.getText().isEmpty() || txtEmail.getText().isEmpty() || txtSenha.getText().isEmpty() || calDataNascimento.getDate() == null) {
                 return;
             }
-            if (isEditRow) {
+            if (isEditRow == true) {
                 return;
             }
-
-            String[] dadosConta = componentes.ShowInpusForCreateAccount();
-
-            Conexao conexao = new Conexao();
+            isAddUser = true;
 
             try {
+                String[] dadosConta = componentes.ShowInpusForCreateAccount();
+                if ("1".equals(dadosConta[0])) {
+                    System.out.println(dadosConta[0]);
+                    isAddUser = false;
+                    txtNome.setText("");
+                    txtEmail.setText("");
+                    txtSenha.setText("");
+                    txtCpf.setText("");
+                    calDataNascimento.setDate(null);
+                    txtRendaMensal.setText("");
+                    return;
+                }
+
+                Conexao conexao = new Conexao();
                 boolean result = conexao.Cadastrar(
                         null,
                         txtNome.getText(),
@@ -187,30 +199,25 @@ public class Administrador {
                 );
 
                 if (result) {
-                    Usuario p = new Usuario();
-                    p.setNome(txtNome.getText());
-                    p.setEmail(txtEmail.getText());
-                    p.setSenha(txtSenha.getText());
-                    p.setCpf(txtCpf.getText());
-                    p.setDataNascimento(calDataNascimento.getDate());
-                    p.setRendaMensal(Float.parseFloat(txtRendaMensal.getText()));
-                    p.setNumeroConta(dadosConta[0]);
-                    p.setSenhaConta(dadosConta[1]);
-                    p.setTipoConta(dadosConta[2]);
-                    p.setStatusConta(dadosConta[3]);
-                    p.setSaldoConta(0);
-
-                    tUsuario.addRow(p);
-
-                    txtNome.setText("");
-                    txtEmail.setText("");
-                    txtSenha.setText("");
-                    txtCpf.setText("");
-                    calDataNascimento.setDate(null);
-                    txtRendaMensal.setText("");
+                    atualizarLista();
                 }
+
+                isAddUser = false;
+                txtNome.setText("");
+                txtEmail.setText("");
+                txtSenha.setText("");
+                txtCpf.setText("");
+                calDataNascimento.setDate(null);
+                txtRendaMensal.setText("");
             } catch (SQLException ex) {
                 Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
+                isAddUser = false;
+                txtNome.setText("");
+                txtEmail.setText("");
+                txtSenha.setText("");
+                txtCpf.setText("");
+                calDataNascimento.setDate(null);
+                txtRendaMensal.setText("");
             }
         });
 
@@ -284,8 +291,7 @@ public class Administrador {
                 boxTipoConta.setVisible(true);
                 lblStatusConta.setVisible(true);
                 boxStatusConta.setVisible(true);
-                
-                
+
                 txtNome.setText((String) tUsuario.getValueAt(selectedLine, 1));
                 txtEmail.setText((String) tUsuario.getValueAt(selectedLine, 2));
                 txtSenha.setText((String) tUsuario.getValueAt(selectedLine, 3));
@@ -296,9 +302,8 @@ public class Administrador {
                 int indexTipoConta = tUsuario.getValueAt(selectedLine, 10).toString().equals("p") ? 0 : 1;
                 boxTipoConta.setSelectedIndex(indexTipoConta);
                 boxStatusConta.setSelectedIndex(Integer.parseInt(tUsuario.getValueAt(selectedLine, 11).toString()));
+                isEditRow = true;
             }
-
-            isEditRow = true;
         });
 
         JButton btnSalvar = new JButton();
@@ -308,7 +313,13 @@ public class Administrador {
         btnSalvar.setBackground(new Color(48, 48, 48));
         btnSalvar.setForeground(new Color(225, 225, 225));
         btnSalvar.addActionListener(e -> {
-            if (isEditRow == false || txtNome.getText().isEmpty() || txtCpf.getText().isEmpty() || txtEmail.getText().isEmpty() || txtSenha.getText().isEmpty() || calDataNascimento.getDate() == null) {
+            if (isEditRow == false || txtNome.getText().isEmpty() || txtCpf.getText().isEmpty() || txtEmail.getText().isEmpty()
+                    || txtSenha.getText().isEmpty() || calDataNascimento.getDate() == null
+                    || txtRendaMensal.getText().isEmpty() || txtSenhaConta.getText().isEmpty()) {
+                System.out.println("vazio");
+                return;
+            } else if (isAddUser == true) {
+                System.out.println("add user ativado");
                 return;
             }
 
@@ -323,9 +334,9 @@ public class Administrador {
                     Integer.toString(boxStatusConta.getSelectedIndex()),
                     Integer.parseInt(tUsuario.getValueAt(selectedLine, 7).toString())
             );
-            
-            if(result) {
-                 tUsuario.setValueAt(txtNome.getText(), selectedLine, 1);
+
+            if (result) {
+                tUsuario.setValueAt(txtNome.getText(), selectedLine, 1);
                 tUsuario.setValueAt(txtEmail.getText(), selectedLine, 2);
                 tUsuario.setValueAt(txtSenha.getText(), selectedLine, 3);
                 tUsuario.setValueAt(txtCpf.getText(), selectedLine, 4);
@@ -344,7 +355,7 @@ public class Administrador {
                 txtSenhaConta.setText("");
                 boxTipoConta.setSelectedItem(0);
                 boxStatusConta.setSelectedIndex(0);
-                
+
                 lblSenhaConta.setVisible(false);
                 txtSenhaConta.setVisible(false);
                 lblTipoConta.setVisible(false);
